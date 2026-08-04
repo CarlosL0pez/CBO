@@ -1,0 +1,149 @@
+
+-- 10 VISTAS 
+
+
+--1. Clientes activos
+CREATE VIEW FIDE_CLIENTES_ACTIVOS_V AS
+SELECT
+    C.ID_CLIENTE "CLIENTE ID",
+    C.NOMBRE NOMBRE,
+    C.APELLIDO_PATERNO "APELLIDO PATERNO",
+    C.APELLIDO_MATERNO "APELLIDO MATERNO",
+    E.NOMBRE ESTADO
+FROM FIDE_CLIENTES_TB C, FIDE_ESTADOS_TB E
+WHERE C.ID_ESTADO = E.ID_ESTADO
+AND C.ID_ESTADO = 1;
+
+SELECT * FROM FIDE_CLIENTES_ACTIVOS_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--2. Servicios disponibles (catalogo para el cliente)
+CREATE VIEW FIDE_SERVICIOS_DISPONIBLES_V AS
+SELECT DISTINCT
+    S.NOMBRE "NOMBRE DEL SERVICIO",
+    PL.NOMBRE "PLAGA QUE TRATA",
+    E.NOMBRE ESTADO
+FROM FIDE_SERVICIOS_TB S, FIDE_PLAGAS_TB PL, FIDE_ESTADOS_TB E
+WHERE S.ID_PLAGA = PL.ID_PLAGA
+AND S.ID_ESTADO = E.ID_ESTADO;
+
+SELECT * FROM FIDE_SERVICIOS_DISPONIBLES_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--3. Citas programadas (proximas visitas)
+CREATE VIEW FIDE_CITAS_PROGRAMADAS_V AS
+SELECT
+    V.ID_VISITA "CITA ID",
+    V.NOMBRE "NOMBRE DE LA CITA",
+    V.FECHA_PROGRAMADA "FECHA PROGRAMADA",
+    C.NOMBRE CLIENTE,
+    C.APELLIDO_PATERNO "APELLIDO CLIENTE",
+    E.NOMBRE ESTADO
+FROM FIDE_VISITAS_TB V, FIDE_CLIENTES_TB C, FIDE_ESTADOS_TB E
+WHERE V.ID_CLIENTE = C.ID_CLIENTE
+AND V.ID_ESTADO = E.ID_ESTADO
+AND V.ID_ESTADO = 6;
+
+SELECT * FROM FIDE_CITAS_PROGRAMADAS_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--4. Facturas emitidas
+CREATE VIEW FIDE_FACTURAS_EMITIDAS_V AS
+SELECT
+    F.ID_FACTURA "FACTURA ID",
+    F.NUMERO "NUMERO DE FACTURA",
+    F.FECHA FECHA,
+    F.TOTAL TOTAL,
+    E.NOMBRE ESTADO
+FROM FIDE_FACTURAS_TB F, FIDE_ESTADOS_TB E
+WHERE F.ID_ESTADO = E.ID_ESTADO;
+
+SELECT * FROM FIDE_FACTURAS_EMITIDAS_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--5. Productos con stock bajo
+CREATE VIEW FIDE_PRODUCTOS_STOCK_BAJO_V AS
+SELECT
+    P.ID_PRODUCTO "PRODUCTO ID",
+    P.NOMBRE NOMBRE,
+    P.UNIDADES_ACTUALES "UNIDADES EN STOCK",
+    E.NOMBRE ESTADO
+FROM FIDE_PRODUCTOS_TB P, FIDE_ESTADOS_TB E
+WHERE P.ID_ESTADO = E.ID_ESTADO
+AND P.ID_ESTADO = 1
+AND P.UNIDADES_ACTUALES < 10;
+
+SELECT * FROM FIDE_PRODUCTOS_STOCK_BAJO_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--6. Empleados activos
+CREATE VIEW FIDE_EMPLEADOS_ACTIVOS_V AS
+SELECT
+    EM.ID_EMPLEADO "EMPLEADO ID",
+    EM.NOMBRE NOMBRE,
+    EM.APELLIDO_PATERNO "APELLIDO PATERNO",
+    PU.NOMBRE PUESTO,
+    E.NOMBRE ESTADO
+FROM FIDE_EMPLEADOS_TB EM, FIDE_PUESTOS_TB PU, FIDE_ESTADOS_TB E
+WHERE EM.ID_PUESTO = PU.ID_PUESTO
+AND EM.ID_ESTADO = E.ID_ESTADO
+AND EM.ID_ESTADO = 1;
+
+SELECT * FROM FIDE_EMPLEADOS_ACTIVOS_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--7. Proveedores activos
+CREATE VIEW FIDE_PROVEEDORES_ACTIVOS_V AS
+SELECT
+    PR.ID_PROVEEDOR "PROVEEDOR ID",
+    PR.NOMBRE NOMBRE,
+    E.NOMBRE ESTADO
+FROM FIDE_PROVEEDORES_TB PR, FIDE_ESTADOS_TB E
+WHERE PR.ID_ESTADO = E.ID_ESTADO
+AND PR.ID_ESTADO = 1;
+
+SELECT * FROM FIDE_PROVEEDORES_ACTIVOS_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--8. Historial de pagos
+CREATE VIEW FIDE_HISTORIAL_PAGOS_V AS
+SELECT
+    PG.ID_PAGO "PAGO ID",
+    MP.NOMBRE "METODO DE PAGO",
+    T.ID_TRANSACCION "TRANSACCION ID",
+    T.MONTO MONTO,
+    E.NOMBRE "ESTADO DEL PAGO"
+FROM FIDE_PAGOS_TB PG, FIDE_METODOSDEPAGO_TB MP, FIDE_TRANSACCIONES_TB T, FIDE_ESTADOS_TB E
+WHERE PG.ID_METODO_PAGO = MP.ID_METODO_PAGO
+AND T.ID_PAGO = PG.ID_PAGO
+AND PG.ID_ESTADO = E.ID_ESTADO;
+
+SELECT * FROM FIDE_HISTORIAL_PAGOS_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--9. Servicios por cliente
+CREATE VIEW FIDE_SERVICIOS_POR_CLIENTE_V AS
+SELECT
+    C.ID_CLIENTE "CLIENTE ID",
+    C.NOMBRE NOMBRE,
+    S.ID_SERVICIO "SERVICIO ID",
+    S.NOMBRE "NOMBRE DEL SERVICIO"
+FROM FIDE_CLIENTES_TB C, FIDE_CLIENTES_X_SERVICIO_TB CS, FIDE_SERVICIOS_TB S
+WHERE C.ID_CLIENTE = CS.ID_CLIENTE
+AND CS.ID_SERVICIO = S.ID_SERVICIO;
+
+SELECT * FROM FIDE_SERVICIOS_POR_CLIENTE_V;
+---------------------------------------------------------------------------------------------------------------------
+
+--10. Inventario disponible 
+CREATE VIEW FIDE_INVENTARIO_DISPONIBLE_V AS
+SELECT
+    P.ID_PRODUCTO "PRODUCTO ID",
+    P.NOMBRE NOMBRE,
+    P.UNIDADES_ACTUALES "UNIDADES EN STOCK",
+    P.PRECIO PRECIO
+FROM FIDE_PRODUCTOS_TB P
+WHERE P.UNIDADES_ACTUALES > 0;
+
+SELECT * FROM FIDE_INVENTARIO_DISPONIBLE_V;
+---------------------------------------------------------------------------------------------------------------------

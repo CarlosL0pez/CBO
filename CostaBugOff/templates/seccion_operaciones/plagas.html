@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CostaBugOff</title>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <div class="JeremyLogo">
+        <link rel="stylesheet" href="/static/css/styles.css" alt="foto Jeremy" />
+      </div>
+
+      <img class="logo-bug" src="/static/img/Jeremy.png" alt="" />
+      <span class="topbar__logo">CostaBugOff</span>
+
+      <span class="topbar__view-tag" id="viewTag">Vista Clientes</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-plagas" data-title="Plaga">
+      <div class="panel__header">
+        <h1>Plagas</h1>
+        <button class="btn btn--ghost btn-update-lookup">
+          Actualizar por ID
+        </button>
+      </div>
+      <div class="panel__body">
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Plaga">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Unidades_necesarias</th>
+                <th>ID_Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in plagas %}
+              <tr>
+                <td>{{ p[0] }}</td>
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+                <td>{{ p[3] }}</td>
+                <td>{{ p[4] }}</td>
+                <td>{{ p[5] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" data-entity="Plagas">
+          <div class="field">
+            <label for="plag-nombre">Tipo</label>
+            <input type="text" id="plag-nombre" name="tipo" placeholder="Tipo" />
+          </div>
+          <div class="field">
+            <label for="plag-nombre">Nombre</label>
+            <input type="text" id="plag-nombre" name="nombre" placeholder="Nombre" />
+          </div>
+          <div class="field">
+            <label for="plag-descripcion">Descripcion</label>
+            <input type="text" id="plag-descripcion" name="descripcion" placeholder="Descripcion" />
+          </div>
+          <div class="field">
+            <label for="plag-unidadesNecesarias">Unidades Necesarias</label>
+            <input type="tel" id="plag-unidadesNecesarias" name="undadesNecesarias" placeholder="UnidadesNecesarias" />
+          </div>
+          <div class="field">
+            <label for="plag-correo">Estado</label>
+            <input type="email" id="plag-estado" name="estado" placeholder="1 = Activo, 2 = Inactivo" />
+          </div>
+          <div class="field">
+            <label for="plag-id">ID (solo actualización)</label>
+            <input type="text" id="plag-id" name="id" readonly />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn--primary btn-agregar">
+              Agregar
+            </button>
+            <button type="button" class="btn btn--secondary btn-actualizar">
+              Actualizar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

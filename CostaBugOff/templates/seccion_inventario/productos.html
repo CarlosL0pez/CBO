@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+{% include 'plantillas/_default_head.html' %}
+
+<!--http://127.0.0.1:5001/productos para correr productos -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Clientes</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-productos" data-title="Productos">
+      <div class="panel__header">
+        <h1>Productos</h1>
+      </div>
+      <div class="panel__body">
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Producto">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Unidades Actuales</th>
+                <th>Estado</th>
+                <th>Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in productos %}
+              <tr data-id="{{ p[0] }}" data-entity="productos">
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+                <td>{{ p[3] }}</td>
+                <td>{{ p[4] }}</td>
+                <td>{{ p[5] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" id="formProductos" data-entity="Producto">
+          <div class="field">
+            <label for="prod-id">ID Producto</label>
+            <input type="number" id="prod-id" name="id_producto" placeholder="1" required />
+          </div>
+          <div class="field">
+            <label for="prod-nombre">Nombre</label>
+            <input type="text" id="prod-nombre" name="nombre" placeholder="Nombre del producto" required />
+          </div>
+          <div class="field">
+            <label for="prod-descripcion">Descripción</label>
+            <input type="text" id="prod-descripcion" name="descripcion" placeholder="Detalles del producto" />
+          </div>
+          <div class="field">
+            <label for="prod-precio">Precio</label>
+            <input type="number" id="prod-precio" name="precio" placeholder="Precio" required />
+          </div>
+          <div class="field">
+            <label for="prod-unidades">Unidades Actuales</label>
+            <input type="number" id="prod-unidades" name="unidades_actuales" placeholder="Stock" required />
+          </div>
+          <div class="field">
+            <label for="prod-estado">ID Estado</label>
+            <input type="number" id="prod-estado" name="id_estado" placeholder="1 = Activo, 2 = Inactivo" required />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btnAgregar" class="btn btn--primary">
+              Agregar
+            </button>
+            <button type="button" id="btnActualizar" class="btn btn--secondary">
+              Actualizar
+            </button>
+            <button type="button" id="btnEliminar" class="btn-icon btn-delete">
+              Eliminar
+            </button>
+          </div>
+        </form>
+        <hr style="
+              margin: 32px 0;
+              border: none;
+              border-top: 1px solid var(--line);
+            " />
+
+        <h2 style="margin-bottom: 12px">Proveedores por Producto</h2>
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="ProductosXProveedor">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Proveedor</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in relaciones %}
+              <tr>
+                <td>{{ r[1] }}</td>
+                <td>{{ r[3] }}</td>
+                <td>{{ r[5] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" id="formRelacion" data-entity="ProductosXProveedor">
+          <div class="field">
+            <label for="rel-producto">Producto</label>
+            <select id="rel-producto" name="id_producto" required>
+              <option value="">Selecciona un producto</option>
+              {% for p in productos %}
+              <option value="{{ p[0] }}">{{ p[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label for="rel-proveedor">Proveedor</label>
+            <select id="rel-proveedor" name="id_proveedor" required>
+              <option value="">Selecciona un proveedor</option>
+              {% for pr in proveedores %}
+              <option value="{{ pr[0] }}">{{ pr[1] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btnAgregarRelacion" class="btn btn--primary btn-agregar">
+              Agregar
+            </button>
+            <button type="button" id="btnDesactivarRelacion" class="btn-icon btn-delete">
+              Desactivar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API = 'http://127.0.0.1:5001/api/productos'
+
+    function obtenerDatosFormulario() {
+      return {
+        id_producto: parseInt(document.getElementById('prod-id').value),
+        nombre: document.getElementById('prod-nombre').value,
+        descripcion: document.getElementById('prod-descripcion').value,
+        precio: parseFloat(document.getElementById('prod-precio').value),
+        unidades: parseInt(document.getElementById('prod-unidades').value),
+        id_estado: parseInt(document.getElementById('prod-estado').value),
+      }
+    }
+
+    document
+      .getElementById('btnAgregar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_producto || !datos.nombre)
+          return alert('Por favor, llena los campos requeridos.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/guardar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formProductos').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnActualizar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_producto)
+          return alert('Especifica el ID del producto a actualizar.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/actualizar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formProductos').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnEliminar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_producto)
+          return alert('Especifica el ID del producto a eliminar.')
+
+        try {
+          const respuesta = await fetch(
+            `${URL_API}/eliminar/${datos.id_producto}`,
+            {
+              method: 'POST',
+            },
+          )
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formProductos').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+    const URL_API_RELACION = 'http://127.0.0.1:5001/api/productos-x-proveedor'
+
+    function obtenerDatosRelacion() {
+      return {
+        id_producto: parseInt(document.getElementById('rel-producto').value),
+        id_proveedor: parseInt(
+          document.getElementById('rel-proveedor').value,
+        ),
+      }
+    }
+
+    document
+      .getElementById('btnAgregarRelacion')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosRelacion()
+        if (!datos.id_producto || !datos.id_proveedor)
+          return alert('Selecciona un producto y un proveedor.')
+        try {
+          const respuesta = await fetch(`${URL_API_RELACION}/guardar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formRelacion').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnDesactivarRelacion')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosRelacion()
+        if (!datos.id_producto || !datos.id_proveedor)
+          return alert('Selecciona un producto y un proveedor.')
+        try {
+          const respuesta = await fetch(
+            `${URL_API_RELACION}/eliminar/${datos.id_proveedor}/${datos.id_producto}`,
+            {
+              method: 'POST',
+            },
+          )
+          const resultado = await respuesta.json()
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formRelacion').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+  </script>
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

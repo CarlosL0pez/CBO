@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Cliente</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+<body>
+
+<h1>Registrar Cliente</h1>
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form action="/clientes/agregar" method="POST">
+
+    <input type="number" name="id_cliente" placeholder="ID Cliente" required><br>
+    <input type="text" name="nombre" placeholder="Nombre" required><br>
+    <input type="text" name="apellido_paterno" placeholder="Apellido paterno" required><br>
+    <input type="text" name="apellido_materno" placeholder="Apellido materno" required><br>
+    <input type="number" name="id_estado" placeholder="1 = Activo, 2 = Inactivo" required><br>
+
+    <button type="submit">Guardar</button>
+
+</form>
+
+<br>
+
+<a href="/index">
+    <button> Volver al menú</button>
+</a>
+
+</body>
+</html>

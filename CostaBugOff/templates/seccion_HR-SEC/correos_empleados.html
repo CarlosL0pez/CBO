@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Correos de Empleados</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-correos-empleados" data-title="Correos de Empleados">
+      <div class="panel__header">
+        <h1>Correos de Empleados</h1>
+      </div>
+      <div class="panel__body">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <form method="get" class="filtro-form">
+            <label for="filtro-estado">Filtrar por estado:</label>
+            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
+              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
+              {% for e in estados %}
+              <option value="{{ e[0] }}" {% if filtro==e[0]|string %}selected{% endif %}>{{ e[1] }}</option>
+              {% endfor %}
+            </select>
+          </form>
+
+          <form class="entity-form" id="formCorreosEmpleados" data-entity="CorreoEmpleado"
+            style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
+            <div class="field">
+              <label for="ce-empleado">Empleado</label>
+              <select id="ce-empleado" name="id_empleado" required>
+                <option value="">Selecciona un empleado</option>
+                {% for p in empleados %}
+                <option value="{{ p[0] }}">{{ p[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="ce-correo">Correo</label>
+              <input type="email" id="ce-correo" name="correo" placeholder="correo@empresa.com" required />
+            </div>
+            <div class="field">
+              <label for="ce-tipo">Tipo</label>
+              <input type="text" id="ce-tipo" name="tipo" placeholder="Personal / Trabajo / Facturación" required />
+            </div>
+            <div class="field">
+              <label for="ce-estado">Estado</label>
+              <select id="ce-estado" name="id_estado" required>
+                <option value="">Selecciona un estado</option>
+                {% for e in estados %}
+                <option value="{{ e[0] }}">{{ e[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="button" id="btnAgregarCorreoEmpleado" class="btn btn--primary btn-agregar">Agregar</button>
+              <button type="button" id="btnActualizarCorreoEmpleado"
+                class="btn btn--secondary btn-actualizar">Actualizar</button>
+              <button type="button" id="btnDesactivarCorreoEmpleado" class="btn-icon btn-delete">Desactivar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="CorreoEmpleado">
+            <thead>
+              <tr>
+                <th>ID Empleado</th>
+                <th>Empleado</th>
+                <th>Correo</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in correos %}
+              <tr>
+                <td>{{ c[0] }}</td>
+                <td>{{ c[1] }}</td>
+                <td>{{ c[2] }}</td>
+                <td>{{ c[3] }}</td>
+                <td>{{ c[4] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API_CORREOS_EMPLEADOS = 'http://127.0.0.1:5001/api/correos_empleados'
+
+    function obtenerDatosCorreoEmpleado() {
+      return {
+        id_empleado: parseInt(document.getElementById('ce-empleado').value),
+        correo: document.getElementById('ce-correo').value,
+        tipo: document.getElementById('ce-tipo').value,
+        id_estado: parseInt(document.getElementById('ce-estado').value),
+      }
+    }
+
+    document.getElementById('btnAgregarCorreoEmpleado').addEventListener('click', async () => {
+      const datos = obtenerDatosCorreoEmpleado()
+      if (!datos.id_empleado || !datos.correo || !datos.tipo || !datos.id_estado)
+        return alert('Llena Empleado, Correo, Tipo y Estado.')
+      try {
+        const respuesta = await fetch(`${URL_API_CORREOS_EMPLEADOS}/guardar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formCorreosEmpleados').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnActualizarCorreoEmpleado').addEventListener('click', async () => {
+      const datos = obtenerDatosCorreoEmpleado()
+      if (!datos.id_empleado || !datos.correo || !datos.tipo || !datos.id_estado)
+        return alert('Llena Empleado, Correo, Tipo y Estado antes de actualizar.')
+      try {
+        const respuesta = await fetch(`${URL_API_CORREOS_EMPLEADOS}/actualizar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formCorreosEmpleados').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnDesactivarCorreoEmpleado').addEventListener('click', async () => {
+      const datos = obtenerDatosCorreoEmpleado()
+      if (!datos.id_empleado || !datos.correo)
+        return alert('Selecciona el Empleado y el Correo a desactivar.')
+      try {
+        const respuesta = await fetch(
+          `${URL_API_CORREOS_EMPLEADOS}/eliminar/${datos.id_empleado}/${encodeURIComponent(datos.correo)}`,
+          { method: 'POST' },
+        )
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formCorreosEmpleados').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+  </script>
+
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

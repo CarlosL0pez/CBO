@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es">
+{% include 'plantillas/_default_head.html' %}
+<!--http://127.0.0.1:5001/productos para correr productos -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Pagos</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-pagos" data-title="Pagos">
+      <div class="panel__header">
+        <h1>Pagos</h1>
+      </div>
+      <div class="panel__body">
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Pago">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Metodo de Pago</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in pagos %}
+              <tr>
+                <td>{{ p[0] }}</td>
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" id="formPagos" data-entity="Pago">
+          <div class="field">
+            <label for="pago-id">ID Pago</label>
+            <input type="number" id="pago-id" name="id_transaccion" placeholder="1" required />
+          </div>
+          <div class="field">
+            <label for="pago-fecha">Fecha de Pago</label>
+            <input type="date" id="pago-fecha" name="fecha" placeholder="Fecha de Pago" required />
+          </div>
+          name="id_pago"
+          placeholder="ID de Pago"
+          required
+          />
+      </div>
+      <div class="field">
+        <label for="pago-metodo">Método de Pago</label>
+        <input type="text" id="pago-metodo" name="metodo_pago" placeholder="Método de Pago" required />
+      </div>
+      required
+      />
+      </div>
+      <div class="field">
+        <label for="pago-estado">ID Estado</label>
+        <input type="number" id="pago-estado" name="id_estado" placeholder="1 = Activo, 2 = Inactivo" required />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" id="btnAgregar" class="btn btn--primary">
+          Agregar
+        </button>
+        <button type="button" id="btnActualizar" class="btn btn--secondary">
+          Actualizar
+        </button>
+        <button type="button" id="btnEliminar" class="btn-icon btn-delete">
+          Eliminar
+        </button>
+      </div>
+      </form>
+
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API = 'http://127.0.0.1:5001/api/pagos'
+
+    function obtenerDatosFormulario() {
+      return {
+        id_pago: document.getElementById('pago-id').value,
+        fecha: parseFloat(document.getElementById('pago-fecha').value),
+        metodo_pago: parseInt(document.getElementById('pago-metodo').value),
+        id_estado: parseInt(document.getElementById('pago-estado').value),
+      }
+    }
+
+    document
+      .getElementById('btnAgregar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_pago)
+          return alert('Por favor, llena los campos requeridos.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/guardar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formPagos').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnActualizar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_pago)
+          return alert('Especifica el ID del pago a actualizar.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/actualizar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formPagos').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnEliminar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_pago)
+          return alert('Especifica el ID del pago a eliminar.')
+
+        try {
+          const respuesta = await fetch(
+            `${URL_API}/eliminar/${datos.id_pago}`,
+            {
+              method: 'POST',
+            },
+          )
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formPagos').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+  </script>
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

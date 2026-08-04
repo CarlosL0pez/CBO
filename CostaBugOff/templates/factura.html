@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CostaBugOff - Factura</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__logo">CostaBugOff</span>
+      <span class="topbar__view-tag">Factura</span>
+    </div>
+  </header>
+
+  <nav class="mainnav">
+    <ul>
+      <li><a class="nav-btn" href="/index">Inicios-TEST</a></li>
+      <li><a class="nav-btn" href="/planes">Planes</a></li>
+      <li><a class="nav-btn" href="/carrito">Carrito</a></li>
+      <li><a class="nav-btn" href="/mis-facturas">Mis facturas</a></li>
+      <li><a class="nav-btn" href="/logout">Cerrar sesión</a></li>
+    </ul>
+  </nav>
+
+  <main class="app">
+    <section class="panel active" data-title="Factura">
+      <div class="panel__header">
+        <h1>¡Compra confirmada!</h1>
+      </div>
+      <div class="panel__body">
+        {% if factura %}
+        <p><b>Número de factura:</b> {{ factura.NUMERO }}</p>
+        <p><b>Fecha:</b> {{ factura.FECHA }}</p>
+        <p><b>Total:</b> ₡{{ "%.2f"|format(factura.TOTAL or 0) }}</p>
+        <p><b>Método de pago:</b> {{ factura.METODO_PAGO }}</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for linea in detalle %}
+              <tr>
+                <td>{{ linea.NOMBRE_ITEM }}</td>
+                <td>{{ linea.CANTIDAD }}</td>
+                <td>₡{{ "%.2f"|format(linea.PRECIO_UNITARIO or 0) }}</td>
+                <td>₡{{ "%.2f"|format(linea.SUBTOTAL or 0) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-actions" style="margin-top: 20px">
+          <a class="btn btn--primary" href="/factura/{{ factura.ID_FACTURA }}/pdf" target="_blank">Descargar PDF</a>
+        </div>
+        {% else %}
+        <p>No se encontró la factura.</p>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

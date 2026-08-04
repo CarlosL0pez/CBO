@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es">
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Servicios</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-servicios" data-title="Servicios">
+      <div class="panel__header">
+        <h1>Servicios</h1>
+      </div>
+      <div class="panel__body">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <form method="get" class="filtro-form">
+            <label for="filtro-estado">Filtrar por estado:</label>
+            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
+              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
+              {% for e in estados %}
+              <option value="{{ e[0] }}" {% if filtro==e[0]|string %}selected{% endif %}>{{ e[1] }}</option>
+              {% endfor %}
+            </select>
+          </form>
+
+          <form class="entity-form" id="formServicios" data-entity="Servicio"
+            style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
+            <div class="field">
+              <label for="serv-id">ID Servicio</label>
+              <input type="number" id="serv-id" name="id_servicio" placeholder="1" required />
+            </div>
+            <div class="field">
+              <label for="serv-nombre">Nombre</label>
+              <input type="text" id="serv-nombre" name="nombre" placeholder="Nombre del servicio" required />
+            </div>
+            <div class="field">
+              <label for="serv-plaga">Plaga</label>
+              <select id="serv-plaga" name="id_plaga">
+                <option value="">Selecciona una plaga</option>
+                {% for p in plagas %}
+                <option value="{{ p[0] }}">{{ p[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="serv-usuario">Usuario</label>
+              <select id="serv-usuario" name="id_usuario">
+                <option value="">Selecciona un usuario</option>
+                {% for u in usuarios %}
+                <option value="{{ u[0] }}">{{ u[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="serv-servicio-realizado">Servicio Realizado</label>
+              <select id="serv-servicio-realizado" name="id_servicio_realizado">
+                <option value="">Selecciona un servicio realizado</option>
+                {% for sr in servicios_realizados %}
+                <option value="{{ sr[0] }}">{{ sr[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="field">
+              <label for="serv-estado">Estado</label>
+              <select id="serv-estado" name="id_estado" required>
+                <option value="">Selecciona un estado</option>
+                {% for e in estados %}
+                <option value="{{ e[0] }}">{{ e[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="button" id="btnAgregarServicio" class="btn btn--primary btn-agregar">Agregar</button>
+              <button type="button" id="btnActualizarServicio"
+                class="btn btn--secondary btn-actualizar">Actualizar</button>
+              <button type="button" id="btnDesactivarServicio" class="btn-icon btn-delete">Desactivar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Servicio">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Plaga Asociada</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in servicios %}
+              <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}</td>
+                <td>{{ s[3] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API_SERVICIOS = 'http://127.0.0.1:5001/api/servicios'
+
+    function obtenerDatosServicio() {
+      const idPlaga = document.getElementById('serv-plaga').value
+      const idUsuario = document.getElementById('serv-usuario').value
+      const idServicioRealizado = document.getElementById('serv-servicio-realizado').value
+      return {
+        id_servicio: parseInt(document.getElementById('serv-id').value),
+        nombre: document.getElementById('serv-nombre').value,
+        id_plaga: idPlaga ? parseInt(idPlaga) : null,
+        id_usuario: idUsuario ? parseInt(idUsuario) : null,
+        id_servicio_realizado: idServicioRealizado ? parseInt(idServicioRealizado) : null,
+        id_estado: parseInt(document.getElementById('serv-estado').value),
+      }
+    }
+
+    document.getElementById('btnAgregarServicio').addEventListener('click', async () => {
+      const datos = obtenerDatosServicio()
+      if (!datos.id_servicio || !datos.nombre || !datos.id_estado)
+        return alert('Llena al menos ID, Nombre y Estado.')
+      try {
+        const respuesta = await fetch(`${URL_API_SERVICIOS}/guardar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formServicios').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnActualizarServicio').addEventListener('click', async () => {
+      const datos = obtenerDatosServicio()
+      if (!datos.id_servicio || !datos.nombre || !datos.id_estado)
+        return alert('Llena al menos ID, Nombre y Estado antes de actualizar.')
+      try {
+        const respuesta = await fetch(`${URL_API_SERVICIOS}/actualizar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formServicios').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnDesactivarServicio').addEventListener('click', async () => {
+      const datos = obtenerDatosServicio()
+      if (!datos.id_servicio)
+        return alert('Especifica el ID del servicio a desactivar.')
+      try {
+        const respuesta = await fetch(`${URL_API_SERVICIOS}/eliminar/${datos.id_servicio}`, {
+          method: 'POST',
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formServicios').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+  </script>
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

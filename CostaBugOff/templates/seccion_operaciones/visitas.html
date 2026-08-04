@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+
+      <span class="topbar__view-tag" id="viewTag">Vista Visitas</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-clientes" data-title="Visitas">
+      <div class="panel__header">
+        <h1>Visitas</h1>
+      </div>
+      <div class="panel__body">
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Visitas">
+            <thead>
+              <tr>
+                <th>ID Visita</th>
+                <th>Nombre</th>
+                <th>Fecha Programada</th>
+                <th>Fecha Realizada</th>
+                <th>ID Suscripcion</th>
+                <th>ID Cliente</th>
+                <th>ID Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in visitas %}
+              <tr>
+                <td>{{ v[0] }}</td>
+                <td>{{ v[1] }}</td>
+                <td>{{ v[2] }}</td>
+                <td>{{ v[3] }}</td>
+                <td>{{ v[4] }}</td>
+                <td>{{ v[5] }}</td>
+                <td>{{ v[6] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" data-entity="Visitas">
+          <div class="field">
+            <label for="v-idVisita">ID visita</label>
+            <input type="number" id="v-idVisita" name="idVisita" placeholder="ID de la visita">
+          </div>
+          <div class="field">
+            <label for="v-Nombre">Nombre</label>
+            <input type="text" id="v-Nombre" name="nombre" placeholder="Nombre del cliente">
+          </div>
+          <div class="field">
+            <label for="v-fechaP">Fecha Programada</label>
+            <input type="date" id="v-fechaP" name="fechaP" placeholder="fecha programada de la visita">
+          </div>
+          <div class="field">
+            <label for="v-fechaR">Fecha Realizada</label>
+            <input type="date" id="v-fechaR" name="fechaR" placeholder="fecha realizada de la visita">
+          </div>
+          <div class="field">
+            <label for="v-idSuscripcion">ID Suscripcion</label>
+            <input type="number" id="v-idSuscripcion" name="idSuscripcion" placeholder="ID de la suscripcion">
+          </div>
+          <div class="field">
+            <label for="v-idCliente">ID del Cliente</label>
+            <input type="number" id="v-idCliente" name="idCliente" placeholder="ID del cliente">
+          </div>
+          <div class="field">
+            <label for="v-idEstado">ID Estado</label>
+            <input type="number" id="v-idEstado" name="idEstado" placeholder="1 = Activo, 2 = Inactivo">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn--primary btn-agregar">Agregar</button>
+            <button type="button" class="btn btn--secondary btn-actualizar">Actualizar</button>
+            <button type="button" id="btnActualizar" class="btn-icon btn-delete">Eliminar</button>
+          </div>
+        </form>
+
+      </div>
+    </section>
+
+  </main>
+  {% include 'plantillas/_default_scripts.html' %}
+
+</body>
+
+</html>

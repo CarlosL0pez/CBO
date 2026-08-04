@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Empleados</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-empleados" data-title="Empleados">
+      <div class="panel__header">
+        <h1>Empleados</h1>
+      </div>
+      <div class="panel__body_inverse">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          {# <form method="get" class="filtro-form">
+            <label for="filtro-estado">Filtrar por estado:</label>
+            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
+              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
+              <option value="1" {% if filtro=="1" %}selected{% endif %}>Activos</option>
+              <option value="2" {% if filtro=="2" %}selected{% endif %}>Inactivos</option>
+            </select>
+          </form> #}
+
+          <form class="entity-form" id="formEmpleados" data-entity="Empleados"
+            style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
+            <div class="field">
+              <label for="emp-id-empleado">ID Empleado</label>
+              <input type="number" id="emp-id-empleado" name="id_empleado" placeholder="1" required />
+            </div>
+            <div class="field">
+              <label for="emp-nombre">Nombre</label>
+              <input type="text" id="emp-nombre" name="nombre" placeholder="Nombre" required />
+            </div>
+            <div class="field">
+              <label for="emp-apellido1">Primer apellido</label>
+              <input type="text" id="emp-apellido1" name="apellido1" placeholder="Primer apellido" />
+            </div>
+            <div class="field">
+              <label for="emp-apellido2">Segundo apellido</label>
+              <input type="text" id="emp-apellido2" name="apellido2" placeholder="Segundo apellido" />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="emp-idPuesto">Puesto</label>
+              <select id="emp-idPuesto" name="id_puesto" required>
+                <option value="">Selecciona un puesto</option>
+                {% for p in puestos %}
+                <option value="{{ p[0] }}">{{ p[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="button" id="btnAgregarEmpleado" class="btn btn--primary btn-agregar">
+                Agregar
+              </button>
+              <button type="button" id="btnActualizarEmpleado" class="btn btn--secondary btn-actualizar">
+                Actualizar
+              </button>
+              <button type="button" id="btnDesactivarEmpleado" class="btn-icon btn-delete">
+                Desactivar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="empleados">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Primer Apellido</th>
+                <th>Segundo Apellido</th>
+                <th>Puesto</th>
+                <th>Estado</th>
+                <th>Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in empleados %}
+              <tr data-id="{{ e[0] }}" data-entity="empleados">
+                <td>{{ e[1] }}</td>
+                <td>{{ e[2] }}</td>
+                <td>{{ e[3] }}</td>
+                <td>{{ e[4] }}</td>
+                <td>{{ e[5] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API_EMPLEADOS = 'http://127.0.0.1:5001/api/empleados'
+
+    function obtenerDatosEmpleado() {
+      return {
+        id_empleado: parseInt(document.getElementById('emp-id-empleado').value),
+        nombre: document.getElementById('emp-nombre').value,
+        apellido_paterno: document.getElementById('emp-apellido1').value,
+        apellido_materno: document.getElementById('emp-apellido2').value,
+        id_puesto: parseInt(document.getElementById('emp-idPuesto').value),
+      }
+    }
+
+    document.getElementById('btnAgregarEmpleado').addEventListener('click', async () => {
+      const datos = obtenerDatosEmpleado()
+      if (!datos.id_empleado || !datos.nombre || !datos.apellido_paterno || !datos.apellido_materno || !datos.id_puesto)
+        return alert('Llena todos los campos: Agregar crea el registro completo (queda activo por defecto).')
+      try {
+        const respuesta = await fetch(`${URL_API_EMPLEADOS}/guardar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formEmpleados').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnActualizarEmpleado').addEventListener('click', async () => {
+      const datos = obtenerDatosEmpleado()
+      if (!datos.id_empleado || !datos.nombre || !datos.apellido_paterno || !datos.apellido_materno || !datos.id_puesto)
+        return alert('Llena todos los campos antes de actualizar (el empleado queda activo).')
+      try {
+        const respuesta = await fetch(`${URL_API_EMPLEADOS}/actualizar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formEmpleados').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnDesactivarEmpleado').addEventListener('click', async () => {
+      const datos = obtenerDatosEmpleado()
+      if (!datos.id_empleado)
+        return alert('Especifica el ID del empleado a desactivar.')
+      try {
+        const respuesta = await fetch(`${URL_API_EMPLEADOS}/desactivar/${datos.id_empleado}`, {
+          method: 'POST',
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formEmpleados').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+  </script>
+
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

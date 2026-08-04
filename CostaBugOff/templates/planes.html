@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CostaBugOff - Planes</title>
+  <link rel="stylesheet" href="/static/css/styles.css" />
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <img class="logo-bug" src="/static/img/Jeremy.png" alt="CostaBugOff" />
+      <span class="topbar__logo">CostaBugOff</span>
+      <span class="topbar__view-tag">Planes y Productos</span>
+    </div>
+  </header>
+
+  <nav class="mainnav">
+    <ul>
+      <li><a class="nav-btn" href="/inicio-cliente">Inicio</a></li>
+      <li><a class="nav-btn" href="/planes">Planes</a></li>
+      <li><a class="nav-btn" href="/carrito">Carrito</a></li>
+      <li><a class="nav-btn" href="/mis-facturas">Mis facturas</a></li>
+      <li><a class="nav-btn" href="/programar-visita">Programar Visita</a></li>
+      <li><a class="nav-btn" href="/informacion">Información</a></li>
+      <li><a class="nav-btn" href="/logout">Cerrar sesión</a></li>
+    </ul>
+  </nav>
+
+  <main class="app">
+    <section class="panel active" data-title="Planes de Suscripción">
+      <div class="panel__header">
+        <h1>Planes de Suscripción</h1>
+      </div>
+      <div class="panel__body">
+        <form class="entity-form">
+          <div class="field">
+            <label for="sub-select">Plan</label>
+            <select id="sub-select" required>
+              <option value="">Selecciona un plan</option>
+              {% for s in suscripciones %}
+              <option value="{{ s[0] }}" data-nombre="{{ s[6] }}" data-precio="{{ s[5] or 0 }}">{{ s[6] }} — ₡{{
+                "%.2f"|format(s[5] or 0) }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label for="sub-cantidad">Cantidad</label>
+            <input type="number" id="sub-cantidad" value="1" min="1" />
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btnAgregarSub" class="btn btn--primary">
+              Agregar al carrito
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel active" data-title="Productos">
+      <div class="panel__header">
+        <h1>Productos</h1>
+      </div>
+      <div class="panel__body">
+        <form class="entity-form">
+          <div class="field">
+            <label for="prod-select">Producto</label>
+            <select id="prod-select" required>
+              <option value="">Selecciona un producto</option>
+              {% for p in productos %}
+              {% if p[4] and p[4] > 0 %}
+              <option value="{{ p[0] }}" data-nombre="{{ p[1] }}" data-precio="{{ p[3] or 0 }}" data-stock="{{ p[4] }}">
+                {{ p[1] }} — ₡{{ "%.2f"|format(p[3] or 0) }} ({{ p[4] }} disponibles)</option>
+              {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label for="prod-cantidad">Cantidad</label>
+            <input type="number" id="prod-cantidad" value="1" min="1" />
+          </div>
+          <div class="form-actions">
+            <button type="button" id="btnAgregarProd" class="btn btn--primary">
+              Agregar al carrito
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel active">
+      <div class="panel__body">
+        <a class="btn btn--secondary" href="/carrito">Ver carrito</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    async function agregarAlCarrito(datos) {
+      try {
+        const respuesta = await fetch('/carrito/agregar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+      } catch (error) {
+        alert('No se pudo agregar al carrito.')
+      }
+    }
+
+    document.getElementById('btnAgregarSub').addEventListener('click', () => {
+      const select = document.getElementById('sub-select')
+      const opcion = select.selectedOptions[0]
+      const cantidad = parseInt(document.getElementById('sub-cantidad').value) || 1
+
+      if (!opcion || !opcion.value) {
+        return alert('Selecciona un plan primero.')
+      }
+
+      agregarAlCarrito({
+        tipo: 'suscripcion',
+        id: opcion.value,
+        nombre: opcion.dataset.nombre,
+        precio: opcion.dataset.precio,
+        cantidad: cantidad,
+      })
+    })
+
+    document.getElementById('btnAgregarProd').addEventListener('click', () => {
+      const select = document.getElementById('prod-select')
+      const opcion = select.selectedOptions[0]
+      const cantidad = parseInt(document.getElementById('prod-cantidad').value) || 1
+
+      if (!opcion || !opcion.value) {
+        return alert('Selecciona un producto primero.')
+      }
+
+      const stock = parseInt(opcion.dataset.stock) || 0
+      if (cantidad > stock) {
+        return alert(`Solo hay ${stock} disponibles de este producto.`)
+      }
+
+      agregarAlCarrito({
+        tipo: 'producto',
+        id: opcion.value,
+        nombre: opcion.dataset.nombre,
+        precio: opcion.dataset.precio,
+        cantidad: cantidad,
+      })
+    })
+  </script>
+</body>
+
+</html>

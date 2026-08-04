@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Cliente</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="contenedor">
+
+    <h1>Editar Cliente</h1>
+    {% if error %}
+    <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    {% if cliente %}
+    <form action="/clientes/editar/{{ cliente[0] }}" method="POST">
+
+        <input type="hidden" name="id_cliente" value="{{ cliente[0] }}">
+
+        <label>Nombre</label>
+        <input type="text" name="nombre" value="{{ cliente[1] }}">
+
+        <label>Apellido paterno</label>
+        <input type="text" name="apellido_paterno" value="{{ cliente[2] }}">
+
+        <label>Apellido materno</label>
+        <input type="text" name="apellido_materno" value="{{ cliente[3] }}">
+
+        <label>ID Estado</label>
+        <input type="number" name="id_estado" value="1" placeholder="1 = Activo, 2 = Inactivo">
+
+        <button type="submit">Actualizar</button>
+
+    </form>
+    {% else %}
+    <p>No se encontró el cliente solicitado.</p>
+    {% endif %}
+
+    <br>
+
+    <a href="/index">
+        <button>Volver</button>
+    </a>
+
+</div>
+
+</body>
+</html>

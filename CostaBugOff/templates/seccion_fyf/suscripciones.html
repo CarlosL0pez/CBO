@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+{% include 'plantillas/_default_head.html' %}
+<!--http://127.0.0.1:5001/productos para correr productos -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Suscripciones</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+  <main class="app">
+    <section class="panel active" id="panel-suscripciones" data-title="Suscripciones">
+      <div class="panel__header">
+        <h1>Suscripciones</h1>
+      </div>
+      <div class="panel__body">
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Suscripcion">
+            <thead>
+              <tr>
+                <th>Suscripciones</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>ID Pago</th>
+                <th>Estado</th>
+                <th>Precio</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in suscripciones %}
+              <tr>
+                <td>{{ s[0] }}</td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}</td>
+                <td>{{ s[3] }}</td>
+                <td>{{ s[4] }}</td>
+                <td>{{ s[5] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" id="formTransacciones" data-entity="Transaccion">
+          <div class="field">
+            <label for="subs-id">ID suscripcion</label>
+            <input type="number" id="subs-id" name="id_suscripcion" placeholder="1" required />
+          </div>
+          <div class="field">
+            <label for="subs-fecha-inicio">Fecha de inicio</label>
+            <input type="date" id="subs-fecha-inicio" name="fecha_inicio" placeholder="Fecha de inicio" required />
+          </div>
+          <div class="field">
+            <label for="subs-fecha-fin">Fecha de fin</label>
+            <input type="date" id="subs-fecha-fin" name="fecha_fin" placeholder="Fecha de fin" required />
+          </div>
+          <div class="field">
+            <label for="subs-id-pago">ID de pago</label>
+            <input type="number" id="subs-id-pago" name="id_pago" placeholder="ID de Pago" required />
+          </div>
+          required
+          />
+      </div>
+      <div class="field">
+        <label for="subs-estado">Estado</label>
+        <input type="number" id="subs-estado" name="id_estado" placeholder="1 = Activo, 2 = Inactivo" required />
+      </div>
+
+      <div class="field">
+        <label for="subs-precio">Precio</label>
+        <input type="number" id="subs-precio" name="precio" placeholder="Precio" required />
+      </div>
+
+      required
+      />
+      </div>
+
+      <div class="form-actions">
+        <button type="button" id="btnAgregar" class="btn btn--primary">
+          Agregar
+        </button>
+        <button type="button" id="btnActualizar" class="btn btn--secondary">
+          Actualizar
+        </button>
+        <button type="button" id="btnEliminar" class="btn-icon btn-delete">
+          Eliminar
+        </button>
+      </div>
+      </form>
+
+
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API = 'http://127.0.0.1:5001/api/suscripciones'
+
+    function obtenerDatosFormulario() {
+      return {
+        id_suscripcion: parseInt(document.getElementById('subs-id').value),
+        fecha_inicio: document.getElementById('subs-fecha-inicio').value,
+        fecha_fin: document.getElementById('subs-fecha-fin').value,
+        id_pago: document.getElementById('subs-id-pago').value,
+        id_estado: parseInt(document.getElementById('subs-estado').value),
+        precio: parseFloat(document.getElementById('subs-precio').value),
+      }
+    }
+
+    document
+      .getElementById('btnAgregar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_suscripcion || !datos.id_pago)
+          return alert('Por favor, llena los campos requeridos.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/guardar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formTransacciones').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnActualizar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_suscripcion)
+          return alert('Especifica el ID de la suscripción a actualizar.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/actualizar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formTransacciones').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnEliminar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_suscripcion)
+          return alert('Especifica el ID de la suscripción a eliminar.')
+
+        try {
+          const respuesta = await fetch(
+            `${URL_API}/eliminar/${datos.id_suscripcion}`,
+            {
+              method: 'POST',
+            },
+          )
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('formSuscripciones').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+  </script>
+
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

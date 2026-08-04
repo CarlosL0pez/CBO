@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CostaBugOff</title>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <div class="JeremyLogo">
+        <link rel="stylesheet" href="/static/css/styles.css" alt="foto Jeremy" />
+      </div>
+
+      <img class="logo-bug" src="/static/img/Jeremy.png" alt="" />
+      <span class="topbar__logo">CostaBugOff</span>
+
+      <span class="topbar__view-tag" id="viewTag">Vista Proveedores</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-proveedores" data-title="Proveedores">
+      <div class="panel__header">
+        <h1>Proveedores</h1>
+      </div>
+      <div class="panel__body">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <form method="get" class="filtro-form">
+            <label for="filtro-estado">Filtrar por estado:</label>
+            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
+              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
+              <option value="1" {% if filtro=="1" %}selected{% endif %}>Activos</option>
+              <option value="2" {% if filtro=="2" %}selected{% endif %}>Inactivos</option>
+            </select>
+          </form>
+
+          <form class="entity-form" id="formProveedores" data-entity="Proveedores"
+            style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
+            <div class="field">
+              <label for="prov-id">ID Proveedor</label>
+              <input type="number" id="prov-id" name="id_proveedor" placeholder="1" required />
+            </div>
+            <div class="field">
+              <label for="prov-nombre">Nombre</label>
+              <input type="text" id="prov-nombre" name="nombre" placeholder="Nombre del proveedor" required />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="prov-reabastecimiento">ID Reabastecimiento (opcional)</label>
+              <input type="number" id="prov-reabastecimiento" name="id_reabastecimiento" placeholder="Opcional" />
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="button" id="btnAgregarProveedor" class="btn btn--primary btn-agregar">
+                Agregar
+              </button>
+              <button type="button" id="btnActualizarProveedor" class="btn btn--secondary btn-actualizar">
+                Actualizar
+              </button>
+              <button type="button" id="btnDesactivarProveedor" class="btn-icon btn-delete">
+                Desactivar
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Proveedores">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>ID Reabastecimiento</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in proveedores %}
+              <tr>
+                <td>{{ p[0] }}</td>
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+                <td>{{ p[4] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API_PROVEEDORES = 'http://127.0.0.1:5001/api/proveedores'
+
+    function obtenerDatosProveedor() {
+      const reabastecimiento = document.getElementById('prov-reabastecimiento').value
+      return {
+        id_proveedor: parseInt(document.getElementById('prov-id').value),
+        nombre: document.getElementById('prov-nombre').value,
+        id_reabastecimiento: reabastecimiento ? parseInt(reabastecimiento) : null,
+      }
+    }
+
+    document.getElementById('btnAgregarProveedor').addEventListener('click', async () => {
+      const datos = obtenerDatosProveedor()
+      if (!datos.id_proveedor || !datos.nombre)
+        return alert('Llena ID y Nombre.')
+      try {
+        const respuesta = await fetch(`${URL_API_PROVEEDORES}/guardar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formProveedores').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnActualizarProveedor').addEventListener('click', async () => {
+      const datos = obtenerDatosProveedor()
+      if (!datos.id_proveedor || !datos.nombre)
+        return alert('Llena ID y Nombre antes de actualizar (el proveedor queda activo).')
+      try {
+        const respuesta = await fetch(`${URL_API_PROVEEDORES}/actualizar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formProveedores').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnDesactivarProveedor').addEventListener('click', async () => {
+      const datos = obtenerDatosProveedor()
+      if (!datos.id_proveedor)
+        return alert('Especifica el ID del proveedor a desactivar.')
+      try {
+        const respuesta = await fetch(`${URL_API_PROVEEDORES}/eliminar/${datos.id_proveedor}`, {
+          method: 'POST',
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formProveedores').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es">
+
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Cantones</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-cantones" data-title="Cantones">
+      <div class="panel__header">
+        <h1>Cantones</h1>
+      </div>
+      <div class="panel__body_inverse">
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          {# <form method="get" class="filtro-form">
+            <label for="filtro-estado">Filtrar por estado:</label>
+            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
+              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
+              {% for e in estados %}
+              <option value="{{ e[0] }}" {% if filtro==e[0]|string %}selected{% endif %}>{{ e[1] }}</option>
+              {% endfor %}
+            </select>
+          </form> #}
+
+          <form class="entity-form" id="formCantones" data-entity="Canton"
+            style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
+            <div class="field">
+              <label for="can-id">ID Cantón</label>
+              <input type="number" id="can-id" name="id_canton" placeholder="1" required />
+            </div>
+            <div class="field">
+              <label for="can-nombre">Nombre</label>
+              <input type="text" id="can-nombre" name="nombre" placeholder="Nombre del cantón" required />
+            </div>
+            <div class="field" style="grid-column: 1 / -1;">
+              <label for="can-estado">Estado</label>
+              <select id="can-estado" name="id_estado" required>
+                <option value="">Selecciona un estado</option>
+                {% for e in estados %}
+                <option value="{{ e[0] }}">{{ e[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-actions" style="grid-column: 1 / -1;">
+              <button type="button" id="btnAgregarCanton" class="btn btn--primary btn-agregar">Agregar</button>
+              <button type="button" id="btnActualizarCanton"
+                class="btn btn--secondary btn-actualizar">Actualizar</button>
+              <button type="button" id="btnDesactivarCanton" class="btn-icon btn-delete">Desactivar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" data-entity="Canton">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in cantones %}
+              <tr data-id="{{ p[0] }}" data-entity="cantones">
+                <td>{{ p[1] }}</td>
+                <td>{{ p[2] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API_CANTONES = 'http://127.0.0.1:5001/api/cantones'
+
+    function obtenerDatosCanton() {
+      return {
+        id_canton: parseInt(document.getElementById('can-id').value),
+        nombre: document.getElementById('can-nombre').value,
+        id_estado: parseInt(document.getElementById('can-estado').value),
+      }
+    }
+
+    document.getElementById('btnAgregarCanton').addEventListener('click', async () => {
+      const datos = obtenerDatosCanton()
+      if (!datos.id_canton || !datos.nombre || !datos.id_estado)
+        return alert('Llena ID, Nombre y Estado.')
+      try {
+        const respuesta = await fetch(`${URL_API_CANTONES}/guardar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formCantones').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnActualizarCanton').addEventListener('click', async () => {
+      const datos = obtenerDatosCanton()
+      if (!datos.id_canton || !datos.nombre || !datos.id_estado)
+        return alert('Llena ID, Nombre y Estado antes de actualizar.')
+      try {
+        const respuesta = await fetch(`${URL_API_CANTONES}/actualizar`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(datos),
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formCantones').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+
+    document.getElementById('btnDesactivarCanton').addEventListener('click', async () => {
+      const datos = obtenerDatosCanton()
+      if (!datos.id_canton)
+        return alert('Especifica el ID de la canton a desactivar.')
+      try {
+        const respuesta = await fetch(`${URL_API_CANTONES}/eliminar/${datos.id_canton}`, {
+          method: 'POST',
+        })
+        const resultado = await respuesta.json()
+        alert(resultado.message)
+        if (respuesta.ok) {
+          document.getElementById('formCantones').reset()
+          location.reload()
+        }
+      } catch (error) {
+        alert('No se pudo conectar con el servidor de Flask en el puerto 5001.')
+      }
+    })
+  </script>
+  {% include 'plantillas/_default_scripts.html' %}
+
+</body>
+
+</html>

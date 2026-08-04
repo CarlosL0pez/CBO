@@ -1,0 +1,79 @@
+<nav class="mainnav">
+    <ul>
+        {# Dropdown de Clientes #}
+        <li class="dropdown">
+            <a class="nav-btn" href="#" data-section="Clientes"> Clientes ▾ </a>
+            <!-- Contenido oculto del dropdown -->
+            <div class="dropdown-content">
+                <a href="/">Lista de Clientes</a>
+                <a href="{{ url_for('telefonos_clientes') }}" data-section="telefonos_clientes">Teléfonos de
+                    Clientes</a>
+                <a href="{{ url_for('correos_clientes') }}" data-section="correos_clientes">Correos de Clientes</a>
+                <a href="{{ url_for('direcciones_clientes') }}" data-section="direcciones_clientes">Direcciones de
+                    Clientes</a>
+            </div>
+        </li>
+        {# Dropdown de Recursos Humanos y Seguridad #}
+        <li class="dropdown">
+            <a class="nav-btn" href="#" data-section="Recursos Humanos y Seguridad"> Recursos Humanos y Seguridad ▾ </a>
+            <!-- Contenido oculto del dropdown -->
+            <div class="dropdown-content">
+                <a href="{{ url_for('puestos') }}" data-section="puestos">Puestos</a>
+                <a href="/empleados" data-section="empleados">Empleados</a>
+                <a href="/telefonos_empleados" data-section="telefonos_empleados">Teléfonos de
+                    Empleados</a>
+                <a href="{{ url_for('correos_empleados') }}" data-section="correos_empleados">Correos de Empleados</a>
+                <a href="/roles_permisos" data-section="roles_permisos">Roles y Permisos</a>
+                <a href="/usuarios" data-section="usuarios">Usuarios</a>
+            </div>
+        </li>
+        {# Dropdown de Inventario y Proveedores #}
+        <li class="dropdown">
+            <a class="nav-btn" href="#" data-section="Inventario y Proveedores"> Inventario y Proveedores ▾ </a>
+            <!-- Contenido oculto del dropdown -->
+            <div class="dropdown-content">
+                <a href="{{ url_for('productos') }}" data-section="productos">Productos</a>
+                <a href="/reabastecimiento_inventario" data-section="reabastecimiento_inventario">Reabastecimiento de
+                    Inventario</a>
+                <a href="{{ url_for('proveedores') }}" data-section="proveedores">Proveedores</a>
+                <a href="{{ url_for('telefonos_proveedores') }}" data-section="telefonos_proveedores">Teléfonos de
+                    Proveedores</a>
+                <a href="{{ url_for('correos_proveedores') }}" data-section="correos_proveedores">Correos de
+                    Proveedores</a>
+            </div>
+        </li>
+        {# Dropdown de Operaciones #}
+        <li class="dropdown">
+            <a class="nav-btn" href="#" data-section="Operaciones"> Operaciones ▾ </a>
+            <!-- Contenido oculto del dropdown -->
+            <div class="dropdown-content">
+                <a href="{{ url_for('plagas') }}" data-section="plagas">Plagas</a>
+                <a href="{{ url_for('servicios') }}" data-section="servicios">Servicios</a>
+                <a href="{{ url_for('serviciosr') }}" data-section="serviciosR">Servicios Realizados</a>
+                <a href="/visitas" data-section="visitas">Visitas</a>
+                <a href="{{ url_for('provincias') }}" data-section="provincias">Provincias</a>
+                <a href="{{ url_for('cantones') }}" data-section="cantones">Cantones</a>
+                <a href="{{ url_for('distritos') }}" data-section="distritos">Distritos</a>
+            </div>
+        </li>
+        {# Dropdown de Facturación y Finanzas #}
+        <li class="dropdown">
+            <a class="nav-btn" href="#" data-section="Facturacion y Finanzas"> Facturación y Finanzas ▾ </a>
+            <!-- Contenido oculto del dropdown -->
+            <div class="dropdown-content">
+                <a href="{{ url_for('suscripciones') }}" data-section="suscripciones">Suscripciones</a>
+                <a href="{{ url_for('metodos_pago') }}" data-section="metodosdepago">Métodos de Pago</a>
+                <a href="/pagos" data-section="pagos">Pagos</a>
+                {# Esta contiene detalle de transacciones #}
+                <a href="{{ url_for('transacciones') }}" data-section="transacciones">Transacciones</a>
+                <a href="{{ url_for('detalle_transacciones') }}" data-section="detalle_transacciones">Detalle de
+                    Transacciones</a>
+                <a href="/facturas" data-section="facturas">Facturas</a>
+            </div>
+        </li>
+        {# Cerrar sesión #}
+        <li>
+            <a class="nav-btn" href="/logout">Cerrar sesión</a>
+        </li>
+    </ul>
+</nav>

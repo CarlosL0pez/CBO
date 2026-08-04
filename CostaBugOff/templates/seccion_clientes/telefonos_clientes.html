@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es">
+
+{% include 'plantillas/_default_head.html' %}
+<!--http://127.0.0.1:5001/productos para correr productos -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <div class="JeremyLogo"></div>
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Teléfonos de Clientes</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-telefonos" data-title="Teléfonos de Clientes">
+      <div class="panel__header">
+        <h1>Teléfonos de Clientes</h1>
+      </div>
+
+      <!-- TABLA DE TELEFONOS -->
+      <!-- TABLA DE TELEFONOS -->
+      <div class="panel__body">
+        <div class="table-wrap">
+          <table class="data-table" data-entity="TelefonoCliente">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Primer Apellido</th>
+                <th>Segundo Apellido</th>
+                <th>Teléfono</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in telefonos %}
+              <tr data-id1="{{ t[0] }}" data-id2="{{ t[4] }}">
+                <td>{{ t[1] }}</td>
+                <td>{{ t[2] }}</td>
+                <td>{{ t[3] }}</td>
+                <td>{{ t[4] }}</td>
+                <td>{{ t[5] }}</td>
+                <td>{{ t[6] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow2(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- FORMULARIO DE TELEFONOS -->
+        <!-- FORMULARIO DE TELEFONOS -->
+        <form class="entity-form" id="form_telefonos_clientes" data-entity="TelefonoCliente">
+          <div class="field">
+            <label for="cliente-id">ID del Cliente</label>
+            <input type="number" id="cliente-id" name="ID_CLIENTE" placeholder="1" required />
+          </div>
+          <div class="field">
+            <label for="telefono">Telefono</label>
+            <input type="text" id="telefono" name="telefono" placeholder="Ingresa el telefono en el formato XXXX-XXXX"
+              required />
+          </div>
+          <div class="field">
+            <label for="tel-tipo">Tipo</label>
+            <input type="text" id="tel-tipo" name="tipo" placeholder="Ingresa el tipo de telefono" required />
+          </div>
+          <div class="field">
+            <label for="tel-estado">ID Estado</label>
+            <input type="number" id="tel-estado" name="id_estado" placeholder="1 = Activo, 2 = Inactivo" required />
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btnAgregar" class="btn btn--primary">
+              Agregar
+            </button>
+            <button type="button" id="btnActualizar" class="btn btn--secondary">
+              Actualizar
+            </button>
+            <button type="button" id="btnEliminar" class="btn-icon btn-delete">
+              Eliminar
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const URL_API = 'http://127.0.0.1:5001/api/telefonos_clientes'
+
+    function obtenerDatosFormulario() {
+      return {
+        id_cliente: parseInt(document.getElementById('cliente-id').value),
+        telefono: document.getElementById('telefono').value,
+        tipo: document.getElementById('tel-tipo').value,
+        id_estado: parseInt(document.getElementById('tel-estado').value),
+      }
+    }
+
+    document
+      .getElementById('btnAgregar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_cliente || !datos.telefono)
+          return alert('Por favor, llena los campos requeridos.')
+
+        try {
+          const respuesta = await fetch(`${URL_API}/guardar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('form_telefonos_clientes').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+
+    document
+      .getElementById('btnActualizar')
+      .addEventListener('click', async () => {
+        const datos = obtenerDatosFormulario()
+        if (!datos.id_cliente || !datos.telefono)
+          return alert(
+            'Especifica el ID del cliente y el teléfono a actualizar.',
+          )
+
+        try {
+          const respuesta = await fetch(`${URL_API}/actualizar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos),
+          })
+          const resultado = await respuesta.json()
+
+          alert(resultado.message)
+          if (respuesta.ok) {
+            document.getElementById('form_telefonos_clientes').reset()
+            location.reload()
+          }
+        } catch (error) {
+          alert(
+            'No se pudo conectar con el servidor de Flask en el puerto 5001.',
+          )
+        }
+      })
+  </script>
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Vista Clientes</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-clientes" data-title="Clientes">
+      <div class="panel__header">
+        <h1>Clientes</h1>
+
+      </div>
+      <div class="panel__body">
+        <div class="table-wrap">
+          <table class="data-table" data-entity="cliente">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Primer Apellido</th>
+                <th>Segundo Apellido</th>
+                <th>Estado</th>
+                <th>Borrar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for c in clientes %}
+              <tr data-id="{{ c[0] }}" data-entity="cliente">
+                <td>{{ c[1] }}</td>
+                <td>{{ c[2] }}</td>
+                <td>{{ c[3] }}</td>
+                <td>{{ c[4] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <form class="entity-form" data-entity="Cliente">
+          <div class="field">
+            <label for="cli-nombre">Nombre</label>
+            <input type="text" id="cli-nombre" name="nombre" placeholder="Nombre del cliente" />
+          </div>
+          <div class="field">
+            <label for="cli-apellido1">Primer apellido</label>
+            <input type="text" id="cli-apellido1" name="apellido1" placeholder="Primer apellido" />
+          </div>
+          <div class="field">
+            <label for="cli-apellido2">Segundo apellido</label>
+            <input type="text" id="cli-apellido2" name="apellido2" placeholder="Segundo apellido" />
+          </div>
+          <div class="field">
+            <label for="cli-id">ID Estado</label>
+            <input type="text" id="cli-id" name="id" placeholder="id_estado" placeholder="1 = Activo, 2 = Inactivo"
+              required />
+          </div>
+          <div class="form-actions">
+            <a class="btn btn--primary" href="{{ url_for('agregar_cliente') }}">Agregar Cliente</a>
+            <button type="button" class="btn btn--secondary btn-actualizar">
+              Actualizar
+            </button>
+            <button class="btn btn--ghost btn-update-lookup">
+              Actualizar por ID
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document
+      .querySelector('.btn-update-lookup')
+      .addEventListener('click', () => {
+        const id = prompt('ID del cliente a editar:')
+        if (id) window.location.href = `/clientes/editar/${id}`
+      })
+  </script>
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>
