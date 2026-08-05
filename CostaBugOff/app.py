@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from flask_cors import CORS
 from oracledb import IntegrityError
@@ -995,21 +996,23 @@ def facturas_admin():
 # ---------------- OLVIDE PASSWORD (vista para Admin/Empleado/Cliente) ----------------
 @app.route("/olvide-password")
 def olvide_password():
+    print(f"--> RECEIVED OLVIDE-PASSWORD", flush=True)
     return render_template("olvide_password.html")
 
 # Ruta que recibe la petición Fetch del JavaScript
-@app.route('/olvide-password/reset', methods=['POST'])
-def reset_password():
+@app.route('/olvide-password/reset/<email>', methods=['POST'])
+def reset_password(email):
+    print(f"--> RECEIVED RESET REQUEST FOR: {email}", flush=True)
     try:
-        data = request.get_json()
-        user_email = data.get('email')
+        # data = request.get_json()
+        # user_email = data.get('email')
 
-        if not user_email:
+        if not email:
             return jsonify({'success': False, 'error': 'El correo es requerido.'}), 400
         
         else:              
             # Llama a la función que está dentro de olvide_password.py
-            get_usuario_id(user_email)
+            get_usuario_id(email)
 
             return jsonify({
                 'success': True, 
@@ -1017,6 +1020,7 @@ def reset_password():
             }), 200
 
     except Exception as e:
+        app.logger.error(f"--> REQUEST not RECEIVED FOR: {email}")
         return jsonify({'success': False, 'error': str(e)}), 400
 
 
@@ -1024,7 +1028,7 @@ def reset_password():
 
 @app.before_request
 def verificar_acceso():
-    if request.path.startswith("/static") or request.path in ("/login", "/registro", "/olvide-password"):
+    if request.path.startswith("/static") or request.path in ("/login", "/registro") or request.path.startswith("/olvide-password"):
         return
     if "id_usuario" not in session:
         return redirect(url_for("login"))
