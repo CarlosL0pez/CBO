@@ -1156,7 +1156,8 @@ def checkout():
 def ver_factura(id_factura):
     factura = obtener_factura(id_factura)
     detalle = obtener_detalle_factura(id_factura)
-    return render_template("factura.html", factura=factura, detalle=detalle)
+    plantilla = "factura_cliente.html" if session.get("rol") == "Cliente" else "factura.html"
+    return render_template(plantilla, factura=factura, detalle=detalle)
 
 @app.route("/factura/<int:id_factura>/pdf")
 def descargar_factura_pdf(id_factura):
