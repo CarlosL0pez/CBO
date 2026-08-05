@@ -1,6 +1,7 @@
 import smtplib
 import random
 import oracledb
+from email.message import EmailMessage
 from db import get_connection
 
 MY_EMAIL = "costabugoffcostarica@gmail.com"
@@ -33,13 +34,16 @@ def actualizar_usuario(ID_USUARIO, NUEVA_CONTRASENA):
 
 
 def send_email(destination_email, password):    
+    msg = EmailMessage()
+    msg["Subject"] = "Tu contraseña ha sido restablecida"
+    msg["From"] = MY_EMAIL
+    msg["To"] = destination_email
+    msg.set_content(f"Hola, tu contraseña ha sido restablecida. Tu nueva contraseña es: {password}")
     with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
         connection.starttls()
         connection.login(user=MY_EMAIL, password=MY_PASSWORD)
         try:
-            connection.sendmail(from_addr=MY_EMAIL,
-                            to_addrs=destination_email,
-                            msg=f"Subject:Tu contraseña ha sido restablecida\n\nHola, tu contraseña ha sido restablecida. Tu nueva contraseña es: {password}")
+            connection.send_message(msg)
         except Exception as e:
             print(f"Failed to send email to {destination_email}: {e}")
 
