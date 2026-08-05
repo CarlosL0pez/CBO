@@ -26,15 +26,21 @@
           <table class="data-table" data-entity="metodos_pago">
             <thead>
               <tr>
-                <th>Nombre</th>
+                <th>Metodo de Pago</th>
                 <th>Estado</th>
+                <th>Borrar</th>
               </tr>
             </thead>
             <tbody>
               {% for MP in metodos_pago %}
-              <tr>
-                <td>{{ MP[0] }}</td>
+              <tr data-id="{{ MP[0] }}" data-entity="metodos_pago">
                 <td>{{ MP[1] }}</td>
+                <td>{{ MP[2] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>

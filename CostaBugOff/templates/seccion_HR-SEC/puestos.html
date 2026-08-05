@@ -1,23 +1,12 @@
 <!doctype html>
 <html lang="es">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CostaBugOff</title>
-  <link rel="stylesheet" href="/static/css/styles.css" alt="foto Jeremy" />
-</head>
+{% include 'plantillas/_default_head.html' %}
 
 <body>
   <header class="topbar">
     <div class="topbar__brand">
-      <div class="JeremyLogo">
-
-      </div>
-
-      <img class="logo-bug" src="/static/img/Jeremy.png" alt="" />
-      <span class="topbar__logo">CostaBugOff</span>
-
+      {% include 'plantillas/_logo.html' %}
       <span class="topbar__view-tag" id="viewTag">Vista Puestos</span>
     </div>
     <div class="topbar__user" title="Usuario">A</div>
@@ -30,7 +19,7 @@
       <div class="panel__header">
         <h1>Puestos</h1>
       </div>
-      <div class="panel__body">
+      <div class="panel__body_inverse">
         <div style="display: flex; flex-direction: column; gap: 16px">
           <form method="get" class="filtro-form">
             <label for="filtro-estado">Filtrar por estado:</label>
@@ -80,22 +69,26 @@
         </div>
 
         <div class="table-wrap">
-          <table class="data-table" data-entity="Puestos">
+          <table class="data-table" data-entity="puestos">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Estado</th>
+                <th>Borrar</th>
               </tr>
             </thead>
             <tbody>
               {% for p in puestos %}
-              <tr>
-                <td>{{ p[0] }}</td>
+              <tr data-id="{{ p[0] }}" data-entity="puestos">
                 <td>{{ p[1] }}</td>
                 <td>{{ p[2] }}</td>
                 <td>{{ p[3] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -192,6 +185,7 @@
         }
       })
   </script>
+  {% include 'plantillas/_default_scripts.html' %}
 </body>
 
 </html>
