@@ -59,20 +59,24 @@
         </div>
 
         <div class="table-wrap">
-          <table class="data-table" data-entity="Provincia">
+          <table class="data-table" data-entity="provincias">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Estado</th>
+                <th>Borrar</th>
               </tr>
             </thead>
             <tbody>
               {% for p in provincias %}
-              <tr>
-                <td>{{ p[0] }}</td>
+              <tr data-id="{{ p[0] }}" data-entity="provincias">
                 <td>{{ p[1] }}</td>
                 <td>{{ p[2] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>

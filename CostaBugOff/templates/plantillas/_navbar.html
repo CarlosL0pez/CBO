@@ -49,7 +49,8 @@
             <div class="dropdown-content">
                 <a href="{{ url_for('plagas') }}" data-section="plagas">Plagas</a>
                 <a href="{{ url_for('servicios') }}" data-section="servicios">Servicios</a>
-                <a href="{{ url_for('serviciosr') }}" data-section="serviciosR">Servicios Realizados</a>
+                <a href="{{ url_for('servicios_realizados') }}" data-section="servicios_realizados">Servicios
+                    Realizados</a>
                 <a href="/visitas" data-section="visitas">Visitas</a>
                 <a href="{{ url_for('provincias') }}" data-section="provincias">Provincias</a>
                 <a href="{{ url_for('cantones') }}" data-section="cantones">Cantones</a>
@@ -62,7 +63,7 @@
             <!-- Contenido oculto del dropdown -->
             <div class="dropdown-content">
                 <a href="{{ url_for('suscripciones') }}" data-section="suscripciones">Suscripciones</a>
-                <a href="{{ url_for('metodos_pago') }}" data-section="metodosdepago">Métodos de Pago</a>
+                <a href="{{ url_for('metodos_pago') }}" data-section="metodos_pago">Métodos de Pago</a>
                 <a href="/pagos" data-section="pagos">Pagos</a>
                 {# Esta contiene detalle de transacciones #}
                 <a href="{{ url_for('transacciones') }}" data-section="transacciones">Transacciones</a>

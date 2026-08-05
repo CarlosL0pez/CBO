@@ -1,22 +1,12 @@
 <!doctype html>
 <html lang="es">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CostaBugOff</title>
-</head>
+{% include 'plantillas/_default_head.html' %}
 
 <body>
   <header class="topbar">
     <div class="topbar__brand">
-      <div class="JeremyLogo">
-        <link rel="stylesheet" href="/static/css/styles.css" alt="foto Jeremy" />
-      </div>
-
-      <img class="logo-bug" src="/static/img/Jeremy.png" alt="" />
-      <span class="topbar__logo">CostaBugOff</span>
-
+      {% include 'plantillas/_logo.html' %}
       <span class="topbar__view-tag" id="viewTag">Vista Servicios Realizados</span>
     </div>
     <div class="topbar__user" title="Usuario">A</div>
@@ -29,7 +19,7 @@
       <div class="panel__header">
         <h1>Servicios Realizados</h1>
       </div>
-      <div class="panel__body">
+      <div class="panel__body_inverse">
         <div style="display:flex; flex-direction:column; gap:16px;">
           <form method="get" class="filtro-form">
             <label for="filtro-estado">Filtrar por estado:</label>
@@ -76,7 +66,7 @@
         </div>
 
         <div class="table-wrap">
-          <table class="data-table" data-entity="ServicioRealizado">
+          <table class="data-table" data-entity="servicios_realizados">
             <thead>
               <tr>
                 <th>ID</th>
@@ -84,16 +74,22 @@
                 <th>Ubicación</th>
                 <th>Informe</th>
                 <th>Estado</th>
+                <th>Borrar</th>
               </tr>
             </thead>
             <tbody>
               {% for s in serviciosr %}
-              <tr>
+              <tr data-id="{{ s[0] }}" data-entity="servicios_realizados">
                 <td>{{ s[0] }}</td>
                 <td>{{ s[1] }}</td>
                 <td>{{ s[2] }}</td>
                 <td>{{ s[3] }}</td>
                 <td>{{ s[5] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -157,6 +153,7 @@
       }
     })
   </script>
+  {% include 'plantillas/_default_scripts.html' %}
 </body>
 
 </html>

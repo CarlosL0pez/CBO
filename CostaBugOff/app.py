@@ -35,10 +35,10 @@ from models.seccion_inventario.telefonos_proveedores import insertar_telefonos_p
 from models.seccion_inventario.correos_proveedores import insertar_correo_proveedor, actualizar_correo_proveedor, eliminar_correo_proveedor_logico, obtener_correos_proveedores
 #################### Imports Seccion Operaciones ####################
 #################### Imports Seccion Operaciones ####################
-from models.seccion_operaciones.plagas import obtener_plagas
-from models.seccion_operaciones.servicios import insertar_servicio, actualizar_servicio, eliminar_servicio_logico, obtener_servicios
-from models.seccion_operaciones.servicios_realizados import insertar_servicio_realizado, actualizar_servicio_realizado, obtener_servicios_realizados
-from models.seccion_operaciones.visitas import obtener_visitas
+from models.seccion_operaciones.plagas import obtener_plagas, insertar_plaga, actualizar_plaga, eliminar_plaga_logica
+from models.seccion_operaciones.servicios import insertar_servicio, actualizar_servicio, eliminar_servicio_logico, obtener_servicios   
+from models.seccion_operaciones.servicios_realizados import insertar_servicio_realizado, actualizar_servicio_realizado, obtener_servicios_realizados, eliminar_servicio_realizado_logico
+from models.seccion_operaciones.visitas import obtener_visitas, insertar_visita, actualizar_visita, eliminar_visita_logica
 from models.seccion_operaciones.cantones import insertar_canton, actualizar_canton, eliminar_cantones_logico, obtener_cantones
 from models.seccion_operaciones.provincias import insertar_provincia, actualizar_provincia, eliminar_provincia_logico, obtener_provincia
 from models.seccion_operaciones.distritos import obtener_distritos, insertar_distrito, actualizar_distrito, eliminar_distrito_logico
@@ -46,7 +46,7 @@ from models.seccion_operaciones.distritos import obtener_distritos, insertar_dis
 #################### Imports Seccion Facturacion y Finanzas ####################
 #################### Imports Seccion Facturacion y Finanzas ####################
 from models.seccion_fyf.suscripciones import insertar_suscripcion, actualizar_suscripcion, eliminar_suscripcion, obtener_suscripciones
-from models.seccion_fyf.metodos_pago import insertar_metodos_pago, actualizar_metodos_pago, eliminar_metodos_pago_logica, obtener_metodos_pago_main
+from models.seccion_fyf.metodos_pago import insertar_metodos_pago, actualizar_metodos_pago, eliminar_metodo_pago_logico, obtener_metodos_pago_main
 from models.seccion_fyf.pagos import insertar_pago, actualizar_pago, eliminar_pago, obtener_pagos
 from models.seccion_fyf.transacciones import insertar_transaccion, actualizar_transaccion, eliminar_transaccion, obtener_transacciones
 from models.seccion_fyf.detalle_transacciones import insertar_detalle_transaccion, actualizar_detalle_transaccion, eliminar_detalle_transaccion, obtener_detalle_transacciones
@@ -298,7 +298,7 @@ def api_actualizar_puesto():
         return jsonify({"message": f"Error al actualizar en Base de Datos: {str(e)}"}), 500
 
 
-@app.route("/api/puestos/eliminar/<int:id_puesto>", methods=["POST"])
+@app.route("/delete/puestos/<int:id_puesto>", methods=["POST"])
 def api_eliminar_puesto(id_puesto):
     try:
         eliminar_puesto_logico(id_puesto)
@@ -514,13 +514,14 @@ def api_actualizar_proveedor():
     except Exception as e:
         return jsonify({"message": f"Error al actualizar en Base de Datos: {str(e)}"}), 500
 
-@app.route("/api/proveedores/eliminar/<int:id_proveedor>", methods=["POST"])
+
+@app.route("/delete/proveedores/<int:id_proveedor>", methods=["POST"])
 def api_eliminar_proveedor(id_proveedor):
     try:
         eliminar_proveedor_logico(id_proveedor)
-        return jsonify({"message": "¡Proveedor desactivado con éxito!"}), 200
+        return jsonify({'success': True, 'message': '¡Proveedor desactivado con éxito!'}), 200
     except Exception as e:
-        return jsonify({"message": f"Error al eliminar en Base de Datos: {str(e)}"}), 500
+        return jsonify({'success': False, 'message': f"Error al desactivar en Base de Datos: {str(e)}"}), 500
 
 
 # ---------------- Telefono Proveedores (vista para Admin/Empleado/Cliente) ----------------
@@ -614,6 +615,16 @@ def plagas():
     lista_plagas = obtener_plagas() 
     return render_template("seccion_operaciones/plagas.html", plagas=lista_plagas)
 
+@app.route('/delete/plagas/<int:id_plaga>', methods=['POST'])
+def eliminar_plaga(id_plaga):
+    try:
+        eliminar_plaga_logica(id_plaga)
+        return jsonify({'success': True, 'message': 'Plaga eliminada correctamente'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    
+
+
 # ---------------- Servicios (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Servicios (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Servicios (vista para Admin/Empleado/Cliente) ----------------
@@ -624,20 +635,28 @@ def servicios():
     return render_template("seccion_operaciones/servicios.html", servicios=lista_servicios, filtro=id_estado)
 
 
+@app.route('/delete/servicios/<int:id_servicio>', methods=['POST'])
+def eliminar_servicio(id_servicio):
+    try:
+        eliminar_servicio_logico(id_servicio)
+        return jsonify({'success': True, 'message': 'Servicio eliminado correctamente'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    
 
 
 # ---------------- Servicios Realizados (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Servicios Realizados (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Servicios Realizados (vista para Admin/Empleado/Cliente) ----------------
-@app.route("/serviciosr")
-def serviciosr():
+@app.route("/servicios_realizados")
+def servicios_realizados():
     id_estado = request.args.get("estado")  # vacío = Todos, o el ID de cualquier estado del catálogo
     lista_servicios_realizados = obtener_servicios_realizados(id_estado)
     lista_estados = obtener_estados()
-    return render_template("seccion_operaciones/serviciosr.html", serviciosr=lista_servicios_realizados, filtro=id_estado, estados=lista_estados)
+    return render_template("seccion_operaciones/servicios_realizados.html", serviciosr=lista_servicios_realizados, filtro=id_estado, estados=lista_estados)
 
 
-@app.route("/api/serviciosr/guardar", methods=["POST"])
+@app.route("/api/servicios_realizados/guardar", methods=["POST"])
 def api_guardar_servicio_realizado():
     datos = request.get_json()
     try:
@@ -652,7 +671,7 @@ def api_guardar_servicio_realizado():
         return jsonify({"message": f"Error al guardar en Base de Datos: {str(e)}"}), 500
 
 
-@app.route("/api/serviciosr/actualizar", methods=["POST"])
+@app.route("/api/servicios_realizados/actualizar", methods=["POST"])
 def api_actualizar_servicio_realizado():
     datos = request.get_json()
     try:
@@ -666,6 +685,15 @@ def api_actualizar_servicio_realizado():
     except Exception as e:
         return jsonify({"message": f"Error al actualizar en Base de Datos: {str(e)}"}), 500
 
+@app.route('/delete/servicios_realizados/<int:id_servicio_realizado>', methods=['POST'])
+def eliminar_servicio_realizado(id_servicio_realizado):
+    try:
+        eliminar_servicio_realizado_logico(id_servicio_realizado)
+        return jsonify({'success': True, 'message': 'Servicio eliminado correctamente'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    
+
 # ---------------- Visitas (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Visitas (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Visitas (vista para Admin/Empleado/Cliente) ----------------
@@ -674,6 +702,14 @@ def visitas():
     lista_visitas = obtener_visitas()
     return render_template("seccion_operaciones/visitas.html", visitas=lista_visitas)
 
+@app.route('/delete/visitas/<int:id_visita>', methods=['POST'])
+def eliminar_visita(id_visita):
+    try:
+        eliminar_visita_logica(id_visita)
+        return jsonify({'success': True, 'message': 'Visita eliminada correctamente'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+    
 # ---------------- Provincias (vista para Admin) ----------------
 # ---------------- Provincias (vista para Admin) ----------------
 # ---------------- Provincias (vista para Admin) ----------------
@@ -818,7 +854,16 @@ def api_eliminar_suscripcion(id_suscripcion):
 @app.route("/metodos_pago")
 def metodos_pago():
     lista_metodos = obtener_metodos_pago_main()
-    return render_template("seccion_fyf/metodos_pago.html", metodos=lista_metodos)
+    return render_template("seccion_fyf/metodos_pago.html", metodos_pago=lista_metodos)
+
+@app.route("/delete/metodos_pago/<int:id_metodo_pago>", methods=["POST"])
+def eliminar_metodo_pago(id_metodo_pago):
+    try:
+        eliminar_metodo_pago_logico(id_metodo_pago)
+        return jsonify({'success': True, 'message': 'Método de pago desactivado con éxito!'}), 200
+    except Exception as e:
+        return jsonify({'success': False, 'message': f"Error al desactivar en Base de Datos: {str(e)}"}), 500
+
 
 # ---------------- Pagos (vista para Admin/Empleado/Cliente) ----------------
 # ---------------- Pagos (vista para Admin/Empleado/Cliente) ----------------
@@ -955,8 +1000,7 @@ def api_actualizar_detalle_transaccion():
     except Exception as e:
         return jsonify({"message": f"Error al actualizar en Base de Datos: {str(e)}"}), 500
 
-
-@app.route("/api/detalle_transacciones/eliminar/<int:id_detalle_transaccion>", methods=["POST"])
+@app.route("/delete/detalle_transacciones/<int:id_detalle_transaccion>", methods=["POST"])
 def api_eliminar_detalle_transaccion(id_detalle_transaccion):
     try:
         eliminar_detalle_transaccion(id_detalle_transaccion)

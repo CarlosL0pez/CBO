@@ -18,7 +18,7 @@
       <div class="panel__header">
         <h1>Servicios</h1>
       </div>
-      <div class="panel__body">
+      <div class="panel__body_inverse">
         <div style="display:flex; flex-direction:column; gap:16px;">
           <form method="get" class="filtro-form">
             <label for="filtro-estado">Filtrar por estado:</label>
@@ -93,15 +93,21 @@
                 <th>Nombre</th>
                 <th>Plaga Asociada</th>
                 <th>Estado</th>
+                <th>Borrar</th>
               </tr>
             </thead>
             <tbody>
               {% for s in servicios %}
-              <tr>
+              <tr data-id="{{ s[0] }}" data-entity="servicios">
                 <td>{{ s[0] }}</td>
                 <td>{{ s[1] }}</td>
                 <td>{{ s[2] }}</td>
                 <td>{{ s[3] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>

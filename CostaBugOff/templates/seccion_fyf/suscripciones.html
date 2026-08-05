@@ -30,6 +30,7 @@
                 <th>ID Pago</th>
                 <th>Estado</th>
                 <th>Precio</th>
+                <th>Borrar</th>
               </tr>
             </thead>
             <tbody>
@@ -41,6 +42,11 @@
                 <td>{{ s[3] }}</td>
                 <td>{{ s[4] }}</td>
                 <td>{{ s[5] }}</td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
