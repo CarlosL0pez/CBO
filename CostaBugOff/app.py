@@ -964,7 +964,7 @@ def api_eliminar_transaccion(id_transaccion):
 @app.route("/detalle_transacciones")
 def detalle_transacciones():
     lista_detalle = obtener_detalle_transacciones()
-    return render_template("seccion_fyf/detalle_transacciones.html", detalle=lista_detalle)
+    return render_template("seccion_fyf/detalle_transacciones.html", detalle_transacciones=lista_detalle)
 
 @app.route("/api/proveedores/guardar", methods=["POST"])
 def api_guardar_proveedor():
