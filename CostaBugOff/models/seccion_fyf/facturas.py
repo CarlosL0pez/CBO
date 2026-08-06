@@ -155,3 +155,19 @@ def obtener_facturas_cliente(id_cliente):
         cursor.close()
         conn.close()
     return [dict(zip(columnas, fila)) for fila in filas]
+
+
+def eliminar_factura_logico(id_factura):
+    conexion = get_connection()
+    try:
+        cursor = conexion.cursor()
+        cursor.callproc("FIDE_PROYECTO_FINAL_PKG.FIDE_FACTURAS_DELETE_SP", [
+            id_factura
+        ])
+        conexion.commit()
+    except Exception as e:
+        conexion.rollback()
+        raise e
+    finally:
+        cursor.close()
+        conexion.close()

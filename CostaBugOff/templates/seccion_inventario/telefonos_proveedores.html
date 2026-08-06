@@ -20,11 +20,22 @@
       <div class="panel__header">
         <h1>Teléfonos de Proveedores</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Telefono:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="telefonoProveedor"
+            placeholder="Escribe el nombre o el numero de telefono del proveedor." />
+        </form>
+      </div>
+      <!-- TABLA DE TELEFONOS DE PROVEEDORES -->
+      <!-- TABLA DE TELEFONOS DE PROVEEDORES -->
       <div class="panel__body">
         <div class="table-wrap">
-          <table class="data-table" data-entity="telefono_Proveedor">
+          <table class="data-table" data-entity="telefonoProveedor">
             <thead>
               <tr>
+                <th>Proveedor</th>
                 <th>Teléfono</th>
                 <th>Tipo</th>
                 <th>Estado</th>
@@ -36,6 +47,7 @@
                 <td>{{ tp[0] }}</td>
                 <td>{{ tp[1] }}</td>
                 <td>{{ tp[2] }}</td>
+                <td>{{ tp[3] }}</td>
               </tr>
               {% endfor %}
             </tbody>
