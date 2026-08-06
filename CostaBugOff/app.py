@@ -52,7 +52,7 @@ from models.seccion_fyf.transacciones import insertar_transaccion, actualizar_tr
 from models.seccion_fyf.detalle_transacciones import insertar_detalle_transaccion, actualizar_detalle_transaccion, eliminar_detalle_transaccion, obtener_detalle_transacciones
 from models.seccion_fyf.facturas import (
     obtener_metodos_pago, procesar_checkout, obtener_factura,
-    obtener_detalle_factura, obtener_facturas_cliente, obtener_todas_facturas
+    obtener_detalle_factura, obtener_facturas_cliente, obtener_todas_facturas, eliminar_factura_logico
 )
 
 
@@ -1029,6 +1029,14 @@ def facturas_admin():
         clientes=clientes,
         id_cliente_seleccionado=id_cliente,
     )
+
+@app.route("/delete/facturas/<int:id_factura>", methods=["POST"])
+def api_eliminar_factura(id_factura):
+    try:
+        eliminar_factura_logico(id_factura)
+        return jsonify({"message": "¡Factura eliminada con éxito!"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error al eliminar en Base de Datos: {str(e)}"}), 500
 
 
 

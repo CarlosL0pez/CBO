@@ -48,7 +48,7 @@
         </p>
         {% else %}
         <div class="table-wrap">
-          <table class="data-table">
+          <table class="data-table" data-entity="factura">
             <thead>
               <tr>
                 <th>Número</th>
@@ -58,11 +58,12 @@
                 <th>Total</th>
                 <th>Método de pago</th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {% for f in facturas %}
-              <tr>
+              <tr data-id="{{ f.ID_FACTURA }}" data-entity="factura">
                 <td>{{ f.NUMERO }}</td>
                 <td>{{ f.FECHA }}</td>
                 <td>{{ f.NOMBRE_CLIENTE }}</td>
@@ -70,6 +71,11 @@
                 <td>₡{{ "%.2f"|format(f.TOTAL or 0) }}</td>
                 <td>{{ f.METODO_PAGO }}</td>
                 <td><a class="btn btn--primary" href="/factura/{{ f.ID_FACTURA }}">Ver</a></td>
+                <td>
+                  <button class="delete-btn" onclick="deleteRow(this)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -79,6 +85,7 @@
       </div>
     </section>
   </main>
+  {% include 'plantillas/_default_scripts.html' %}
 </body>
 
 </html>

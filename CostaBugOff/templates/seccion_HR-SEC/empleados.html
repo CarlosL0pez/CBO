@@ -18,18 +18,17 @@
       <div class="panel__header">
         <h1>Empleados</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Empleado:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="empleados"
+            placeholder="Escribe el nombre o el puesto del empleado." />
+        </form>
+      </div>
       <div class="panel__body_inverse">
         <div style="display:flex; flex-direction:column; gap:16px;">
-          {# <form method="get" class="filtro-form">
-            <label for="filtro-estado">Filtrar por estado:</label>
-            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
-              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
-              <option value="1" {% if filtro=="1" %}selected{% endif %}>Activos</option>
-              <option value="2" {% if filtro=="2" %}selected{% endif %}>Inactivos</option>
-            </select>
-          </form> #}
-
-          <form class="entity-form" id="formEmpleados" data-entity="Empleados"
+          <form class="entity-form" id="formEmpleados" data-entity="empleados"
             style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
             <div class="field">
               <label for="emp-id-empleado">ID Empleado</label>

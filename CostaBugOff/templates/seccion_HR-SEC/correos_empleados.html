@@ -19,19 +19,17 @@
       <div class="panel__header">
         <h1>Correos de Empleados</h1>
       </div>
-      <div class="panel__body">
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Correo:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="correoempleado"
+            placeholder="Escribe el nombre o el correo del empleado." />
+        </form>
+      </div>
+      <div class="panel__body_inverse">
         <div style="display:flex; flex-direction:column; gap:16px;">
-          <form method="get" class="filtro-form">
-            <label for="filtro-estado">Filtrar por estado:</label>
-            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
-              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
-              {% for e in estados %}
-              <option value="{{ e[0] }}" {% if filtro==e[0]|string %}selected{% endif %}>{{ e[1] }}</option>
-              {% endfor %}
-            </select>
-          </form>
 
-          <form class="entity-form" id="formCorreosEmpleados" data-entity="CorreoEmpleado"
+          <form class="entity-form" id="formCorreosEmpleados" data-entity="correoempleado"
             style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
             <div class="field">
               <label for="ce-empleado">Empleado</label>
@@ -69,7 +67,7 @@
         </div>
 
         <div class="table-wrap">
-          <table class="data-table" data-entity="CorreoEmpleado">
+          <table class="data-table" data-entity="correoempleado">
             <thead>
               <tr>
                 <th>ID Empleado</th>

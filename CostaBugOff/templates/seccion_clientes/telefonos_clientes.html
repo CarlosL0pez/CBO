@@ -8,7 +8,6 @@
 <body>
   <header class="topbar">
     <div class="topbar__brand">
-      <div class="JeremyLogo"></div>
       {% include 'plantillas/_logo.html' %}
       <span class="topbar__view-tag" id="viewTag">Vista Teléfonos de Clientes</span>
     </div>
@@ -23,9 +22,18 @@
         <h1>Teléfonos de Clientes</h1>
       </div>
 
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Telefono:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="TelefonoCliente"
+            placeholder="Escribe el nombre o el numero de telefono del cliente." />
+        </form>
+      </div>
       <!-- TABLA DE TELEFONOS -->
       <!-- TABLA DE TELEFONOS -->
       <div class="panel__body">
+        {# Tabla #}
         <div class="table-wrap">
           <table class="data-table" data-entity="TelefonoCliente">
             <thead>

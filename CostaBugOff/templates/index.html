@@ -19,7 +19,16 @@
         <h1>Clientes</h1>
 
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar cliente:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="cliente"
+            placeholder="Escribe el nombre o el apellido del cliente." />
+        </form>
+      </div>
       <div class="panel__body">
+        {# Tabla #}
         <div class="table-wrap">
           <table class="data-table" data-entity="cliente">
             <thead>
@@ -89,6 +98,7 @@
         if (id) window.location.href = `/clientes/editar/${id}`
       })
   </script>
+
   {% include 'plantillas/_default_scripts.html' %}
 </body>
 

@@ -1,12 +1,7 @@
 <!doctype html>
 <html lang="es">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CostaBugOff</title>
-    <link rel="stylesheet" href="/static/css/styles.css" />
-</head>
+{% include 'plantillas/_default_head.html' %}
 <!--http://127.0.0.1:5001/productos para correr productos -->
 <!--correr con control + ñ y despues ingresar python app.py para que ande -->
 
@@ -27,6 +22,14 @@
         <section class="panel active" id="panel-correos" data-title="Correos de Clientes">
             <div class="panel__header">
                 <h1>Correos de Clientes</h1>
+            </div>
+            {# Filtro de búsqueda #}
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <form class="filtro-form" onsubmit="return false;">
+                    <label for="filtro-busqueda">Buscar Correo:</label>
+                    <input type="text" id="filtro-busqueda" data-filter-target="CorreoCliente"
+                        placeholder="Escribe el nombre o el correo del cliente." />
+                </form>
             </div>
 
             <!-- TABLA DE CORREOS -->
@@ -165,6 +168,7 @@
                 }
             })
     </script>
+    {% include 'plantillas/_default_scripts.html' %}
 </body>
 
 </html>

@@ -19,9 +19,17 @@
       <div class="panel__header">
         <h1>Puestos</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Puesto:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="puestos"
+            placeholder="Escribe el nombre o la descripcion del puesto." />
+        </form>
+      </div>
       <div class="panel__body_inverse">
         <div style="display: flex; flex-direction: column; gap: 16px">
-          <form method="get" class="filtro-form">
+          {# <form method="get" class="filtro-form">
             <label for="filtro-estado">Filtrar por estado:</label>
             <select name="estado" s id="filtro-estado" onchange="this.form.submit()">
               <option value="" {% if not filtro %}selected{% endif %}>
@@ -34,9 +42,9 @@
                 Inactivos
               </option>
             </select>
-          </form>
+          </form> #}
 
-          <form class="entity-form" id="formPuestos" data-entity="Puestos"
+          <form class="entity-form" id="formPuestos" data-entity="puestos"
             style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px">
             <div class="field">
               <label for="p-id-puesto">ID Puesto</label>
