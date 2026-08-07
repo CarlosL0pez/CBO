@@ -1,24 +1,32 @@
 <!doctype html>
 <html lang="es">
 
-{% include 'plantillas/_default_head.html' %}
+<head>
+  {% include 'plantillas/_default_head.html' %}
+</head>
+<!--http://127.0.0.1:5001/facturas para correr facturas -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
 
 
 <body>
-  <header class="topbar">
-    <div class="topbar__brand">
-      {% include 'plantillas/_logo.html' %}
-      <span class="topbar__logo">CostaBugOff</span>
-      <span class="topbar__view-tag">Facturas</span>
-    </div>
-    <div class="topbar__user" title="Usuario">A</div>
+  <header>
+    {# NAVBAR #}
+    {# NAVBAR #}
+    {% with brand_tag="Vista Facturas" %}
+    {% include 'plantillas/_navbar.html' %}
+    {% endwith %}
   </header>
-
-  {% include 'plantillas/_navbar.html' %}
-  <main class="app">
-    <section class="panel active" data-title="Facturas">
+  <main class="app mt-5 pt-4">
+    <section class="panel active mt-5 pt-4" data-title="Facturas">
       <div class="panel__header">
         <h1>Facturas</h1>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Factura:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="facturas"
+            placeholder="Escribe el número or cliente associado a la factura." />
+        </form>
       </div>
       <div class="panel__body panel__body--full">
         <form method="get" action="/facturas" class="filtro-toolbar">
@@ -48,7 +56,7 @@
         </p>
         {% else %}
         <div class="table-wrap">
-          <table class="data-table" data-entity="factura">
+          <table class="data-table" data-entity="facturas">
             <thead>
               <tr>
                 <th>Número</th>
@@ -63,7 +71,7 @@
             </thead>
             <tbody>
               {% for f in facturas %}
-              <tr data-id="{{ f.ID_FACTURA }}" data-entity="factura">
+              <tr data-id="{{ f.ID_FACTURA }}" data-entity="facturas">
                 <td>{{ f.NUMERO }}</td>
                 <td>{{ f.FECHA }}</td>
                 <td>{{ f.NOMBRE_CLIENTE }}</td>
@@ -85,6 +93,13 @@
       </div>
     </section>
   </main>
+  {# FOOTER #}
+  {# FOOTER #}
+  {% include 'plantillas/_footer.html' %}
+
+
+  {# SCRIPTS #}
+  {# SCRIPTS #}
   {% include 'plantillas/_default_scripts.html' %}
 </body>
 

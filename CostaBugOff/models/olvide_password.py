@@ -44,7 +44,7 @@ Hola,
 
 Tu contraseña en CostaBugOff ha sido restablecida con éxito.
 
-Tu nueva contraseña temporal es: {password}
+Tu nueva contraseña es: {password}
 
 Si no solicitaste este cambio, por favor contáctanos de inmediato.
 
@@ -88,7 +88,7 @@ El equipo de CostaBugOff
                     Restablecimiento de Contraseña
                   </h2>
                   <p style="margin-bottom: 22px; color: #4A515A; font-size: 15px;">
-                    Hola, hemos recibido una solicitud para restablecer la contraseña asociada a esta cuenta. Se ha generado una nueva contraseña temporal para ti:
+                    Hola, hemos recibido una solicitud para restablecer la contraseña asociada a esta cuenta. Se ha generado una nueva contraseña para ti:
                   </p>
                   
                   <!-- Password Box -->
@@ -96,7 +96,7 @@ El equipo de CostaBugOff
                     <tr>
                       <td align="center" style="background-color: #FDFBF7; border: 2px dashed #A82226; border-radius: 8px; padding: 20px 15px;">
                         <span style="display: block; font-size: 11px; color: #7A828C; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 600;">
-                          Tu contraseña temporal
+                          Tu nueva contraseña es:
                         </span>
                         <span style="font-family: 'Courier New', Consolas, monospace; font-size: 28px; font-weight: bold; color: #A82226; letter-spacing: 3px;">
                           {password}

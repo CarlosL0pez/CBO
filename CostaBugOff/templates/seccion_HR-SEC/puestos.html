@@ -1,21 +1,23 @@
 <!doctype html>
 <html lang="es">
 
-{% include 'plantillas/_default_head.html' %}
+<head>
+  {% include 'plantillas/_default_head.html' %}
+</head>
+<!--http://127.0.0.1:5001/puestos para correr puestos -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
 
 <body>
-  <header class="topbar">
-    <div class="topbar__brand">
-      {% include 'plantillas/_logo.html' %}
-      <span class="topbar__view-tag" id="viewTag">Vista Puestos</span>
-    </div>
-    <div class="topbar__user" title="Usuario">A</div>
+  <header>
+    {# NAVBAR #}
+    {# NAVBAR #}
+    {% with brand_tag="Vista Puestos" %}
+    {% include 'plantillas/_navbar.html' %}
+    {% endwith %}
   </header>
 
-  {% include 'plantillas/_navbar.html' %}
-
-  <main class="app">
-    <section class="panel active" id="panel-puestos" data-title="Puestos">
+  <main class="app mt-5 pt-4">
+    <section class="panel active mt-5 pt-4" id="panel-puestos" data-title="Puestos">
       <div class="panel__header">
         <h1>Puestos</h1>
       </div>
@@ -105,6 +107,13 @@
       </div>
     </section>
   </main>
+  {# FOOTER #}
+  {# FOOTER #}
+  {% include 'plantillas/_footer.html' %}
+
+
+  {# SCRIPTS #}
+  {# SCRIPTS #}
 
   <script>
     const URL_API_PUESTOS = 'http://127.0.0.1:5001/api/puestos'
