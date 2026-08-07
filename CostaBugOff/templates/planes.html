@@ -97,6 +97,7 @@
     </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     async function agregarAlCarrito(datos) {
       try {
@@ -106,9 +107,15 @@
           body: JSON.stringify(datos),
         })
         const resultado = await respuesta.json()
-        alert(resultado.message)
+        Swal.fire({
+          title: '¡Listo!',
+          text: resultado.message,
+          icon: 'success',
+          timer: 1600,
+          showConfirmButton: false,
+        })
       } catch (error) {
-        alert('No se pudo agregar al carrito.')
+        Swal.fire('Error', 'No se pudo agregar al carrito.', 'error')
       }
     }
 
@@ -118,7 +125,7 @@
       const cantidad = parseInt(document.getElementById('sub-cantidad').value) || 1
 
       if (!opcion || !opcion.value) {
-        return alert('Selecciona un plan primero.')
+        return Swal.fire('Atención', 'Selecciona un plan primero.', 'warning')
       }
 
       agregarAlCarrito({
@@ -136,12 +143,12 @@
       const cantidad = parseInt(document.getElementById('prod-cantidad').value) || 1
 
       if (!opcion || !opcion.value) {
-        return alert('Selecciona un producto primero.')
+        return Swal.fire('Atención', 'Selecciona un producto primero.', 'warning')
       }
 
       const stock = parseInt(opcion.dataset.stock) || 0
       if (cantidad > stock) {
-        return alert(`Solo hay ${stock} disponibles de este producto.`)
+        return Swal.fire('Atención', `Solo hay ${stock} disponibles de este producto.`, 'warning')
       }
 
       agregarAlCarrito({

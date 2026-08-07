@@ -103,6 +103,7 @@
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       document.querySelectorAll('.btn-quitar-carrito').forEach((btn) => {
         btn.addEventListener('click', async () => {
@@ -115,7 +116,7 @@
             })
             location.reload()
           } catch (error) {
-            alert('No se pudo quitar el item.')
+            Swal.fire('Error', 'No se pudo quitar el item.', 'error')
           }
         })
       })

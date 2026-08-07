@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+
+{% include 'plantillas/_default_head.html' %}
+
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      {% include 'plantillas/_logo.html' %}
+      <span class="topbar__view-tag" id="viewTag">Reporte de Ventas</span>
+    </div>
+    <div class="topbar__user" title="Usuario">A</div>
+  </header>
+
+  {% include 'plantillas/_navbar.html' %}
+
+  <main class="app">
+    <section class="panel active" id="panel-reporte_ventas" data-title="reporte_ventas">
+      <div class="panel__header">
+        <h1>Reporte de Ventas Mensuales</h1>
+      </div>
+      <div class="panel__body panel__body--full">
+        {% if not ventas %}
+        <p>Todavía no hay datos de ventas mensuales. Hay que correr el job (FIDE_JOB_VENTAS_MENSUALES) al menos una vez.</p>
+        {% else %}
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Año</th>
+                <th>Mes</th>
+                <th>Total de ventas</th>
+                <th>Transacciones</th>
+                <th>Ventas acumuladas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for v in ventas %}
+              <tr>
+                <td>{{ v.anio }}</td>
+                <td>{{ v.mes_nombre }}</td>
+                <td>₡{{ "%.2f"|format(v.total_ventas or 0) }}</td>
+                <td>{{ v.cantidad_transacciones }}</td>
+                <td>₡{{ "%.2f"|format(v.ventas_acumuladas or 0) }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endif %}
+      </div>
+    </section>
+  </main>
+
+  {% include 'plantillas/_default_scripts.html' %}
+</body>
+
+</html>
