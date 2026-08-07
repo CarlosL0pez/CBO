@@ -2,33 +2,22 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CostaBugOff - Factura</title>
-  <link rel="stylesheet" href="/static/css/styles.css" />
+  {% include 'plantillas/_default_head.html' %}
 </head>
+<!--http://127.0.0.1:5001/ para correr clientes -->
+<!--correr con control + ñ y despues ingresar python app.py para que ande -->
 
 <body>
-  <header class="topbar">
-    <div class="topbar__brand">
-      {% include 'plantillas/_logo.html' %}
-      <span class="topbar__logo">CostaBugOff</span>
-      <span class="topbar__view-tag">Factura</span>
-    </div>
+  <header>
+    {# NAVBAR #}
+    {# NAVBAR #}
+    {% with brand_tag="Vista Factura" %}
+    {% include 'plantillas/_navbar_factura.html' %}
+    {% endwith %}
   </header>
 
-  <nav class="mainnav">
-    <ul>
-      <li><a class="nav-btn" href="/index">Inicios-TEST</a></li>
-      <li><a class="nav-btn" href="/planes">Planes</a></li>
-      <li><a class="nav-btn" href="/carrito">Carrito</a></li>
-      <li><a class="nav-btn" href="/mis-facturas">Mis facturas</a></li>
-      <li><a class="nav-btn" href="/logout">Cerrar sesión</a></li>
-    </ul>
-  </nav>
-
-  <main class="app">
-    <section class="panel active" data-title="Factura">
+  <main class="app mt-5 pt-4">
+    <section class="panel active mt-5 pt-4" style="height: 65vh;" data-title="Factura">
       <div class="panel__header">
         <h1>¡Compra confirmada!</h1>
       </div>
@@ -71,6 +60,14 @@
       </div>
     </section>
   </main>
+  {# FOOTER #}
+  {# FOOTER #}
+  {% include 'plantillas/_footer.html' %}
+
+
+  {# SCRIPTS #}
+  {# SCRIPTS #}
+  {% include 'plantillas/_default_scripts.html' %}
 </body>
 
 </html>
