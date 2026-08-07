@@ -11,6 +11,11 @@ RUTAS_CLIENTE = (
     "/carrito", "/checkout", "/factura", "/mis-facturas",
 )
 RUTAS_RRHH = ("/empleados", "/api/empleados", "/logout")
+RUTAS_BILLING = (
+    "/facturas", "/factura", "/mis-facturas",
+    "/reporte-ventas",
+    "/logout",
+)
 
 #################### Imports Seccion Clientes####################
 #################### Imports Seccion Clientes####################
@@ -53,6 +58,7 @@ from models.seccion_fyf.facturas import (
     obtener_metodos_pago, procesar_checkout, obtener_factura,
     obtener_detalle_factura, obtener_facturas_cliente, obtener_todas_facturas
 )
+from models.seccion_fyf.reporte_ventas import obtener_reporte_ventas
 
 
 from models.usuario import autenticar_usuario
@@ -986,6 +992,28 @@ def facturas_admin():
     )
 
 
+MESES_NOMBRE = {
+    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril", 5: "Mayo", 6: "Junio",
+    7: "Julio", 8: "Agosto", 9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre",
+}
+
+
+@app.route("/reporte-ventas")
+def reporte_ventas():
+    filas = obtener_reporte_ventas()
+    ventas = [
+        {
+            "anio": int(f[0]),
+            "mes": int(f[1]),
+            "mes_nombre": MESES_NOMBRE.get(int(f[1]), f[1]),
+            "total_ventas": f[2],
+            "cantidad_transacciones": f[3],
+            "ventas_acumuladas": f[4],
+        }
+        for f in filas
+    ]
+    return render_template("seccion_fyf/reporte_ventas.html", ventas=ventas)
+
 
 ###########################################################################################
 ################################## SECCION - OTROS ##################################
@@ -1037,7 +1065,10 @@ def verificar_acceso():
     if rol == "RRHH" and not request.path.startswith(RUTAS_RRHH):
         return redirect(url_for("empleados"))
 
-    if rol == "Empleado" and request.path.startswith(("/empleados", "/api/empleados")):
+    if rol == "Billing" and not request.path.startswith(RUTAS_BILLING):
+        return redirect(url_for("facturas_admin"))
+
+    if rol == "Empleado" and request.path.startswith(("/empleados", "/api/empleados", "/reporte-ventas")):
         return redirect(url_for("clientes"))
 
 

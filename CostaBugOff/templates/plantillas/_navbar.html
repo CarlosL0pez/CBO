@@ -1,5 +1,6 @@
 <nav class="mainnav">
     <ul>
+        {% if session.get('rol') != 'Billing' %}
         {# Dropdown de Clientes #}
         <li class="dropdown">
             <a class="nav-btn" href="#" data-section="Clientes"> Clientes ▾ </a>
@@ -56,11 +57,13 @@
                 <a href="{{ url_for('distritos') }}" data-section="distritos">Distritos</a>
             </div>
         </li>
+        {% endif %}
         {# Dropdown de Facturación y Finanzas #}
         <li class="dropdown">
             <a class="nav-btn" href="#" data-section="Facturacion y Finanzas"> Facturación y Finanzas ▾ </a>
             <!-- Contenido oculto del dropdown -->
             <div class="dropdown-content">
+                {% if session.get('rol') != 'Billing' %}
                 <a href="{{ url_for('suscripciones') }}" data-section="suscripciones">Suscripciones</a>
                 <a href="{{ url_for('metodos_pago') }}" data-section="metodosdepago">Métodos de Pago</a>
                 <a href="/pagos" data-section="pagos">Pagos</a>
@@ -68,7 +71,11 @@
                 <a href="{{ url_for('transacciones') }}" data-section="transacciones">Transacciones</a>
                 <a href="{{ url_for('detalle_transacciones') }}" data-section="detalle_transacciones">Detalle de
                     Transacciones</a>
+                {% endif %}
                 <a href="/facturas" data-section="facturas">Facturas</a>
+                {% if session.get('rol') != 'Empleado' %}
+                <a href="{{ url_for('reporte_ventas') }}" data-section="reporte_ventas">Reporte de Ventas</a>
+                {% endif %}
             </div>
         </li>
         {# Cerrar sesión #}
