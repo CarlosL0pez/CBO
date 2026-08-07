@@ -19,19 +19,17 @@
       <div class="panel__header">
         <h1>Cantones</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Cantón:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="cantones"
+            placeholder="Escribe el nombre del cantón." />
+        </form>
+      </div>
       <div class="panel__body_inverse">
         <div style="display:flex; flex-direction:column; gap:16px;">
-          {# <form method="get" class="filtro-form">
-            <label for="filtro-estado">Filtrar por estado:</label>
-            <select name="estado" id="filtro-estado" onchange="this.form.submit()">
-              <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
-              {% for e in estados %}
-              <option value="{{ e[0] }}" {% if filtro==e[0]|string %}selected{% endif %}>{{ e[1] }}</option>
-              {% endfor %}
-            </select>
-          </form> #}
-
-          <form class="entity-form" id="formCantones" data-entity="Canton"
+          <form class="entity-form" id="formCantones" data-entity="cantones"
             style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
             <div class="field">
               <label for="can-id">ID Cantón</label>
@@ -60,7 +58,7 @@
         </div>
 
         <div class="table-wrap">
-          <table class="data-table" data-entity="Canton">
+          <table class="data-table" data-entity="cantones">
             <thead>
               <tr>
                 <th>Nombre</th>

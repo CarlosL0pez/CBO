@@ -18,9 +18,17 @@
       <div class="panel__header">
         <h1>Servicios</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Servicio:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="servicios"
+            placeholder="Escribe el nombre o la plaga asociada al servicio." />
+        </form>
+      </div>
       <div class="panel__body_inverse">
         <div style="display:flex; flex-direction:column; gap:16px;">
-          <form method="get" class="filtro-form">
+          {# <form method="get" class="filtro-form">
             <label for="filtro-estado">Filtrar por estado:</label>
             <select name="estado" id="filtro-estado" onchange="this.form.submit()">
               <option value="" {% if not filtro %}selected{% endif %}>Todos</option>
@@ -28,9 +36,9 @@
               <option value="{{ e[0] }}" {% if filtro==e[0]|string %}selected{% endif %}>{{ e[1] }}</option>
               {% endfor %}
             </select>
-          </form>
+          </form> #}
 
-          <form class="entity-form" id="formServicios" data-entity="Servicio"
+          <form class="entity-form" id="formServicios" data-entity="servicios"
             style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 16px;">
             <div class="field">
               <label for="serv-id">ID Servicio</label>
@@ -86,7 +94,7 @@
         </div>
 
         <div class="table-wrap">
-          <table class="data-table" data-entity="Servicio">
+          <table class="data-table" data-entity="servicios">
             <thead>
               <tr>
                 <th>ID</th>

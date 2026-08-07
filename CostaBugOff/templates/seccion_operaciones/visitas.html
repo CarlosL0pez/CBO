@@ -20,8 +20,15 @@
       <div class="panel__header">
         <h1>Visitas</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Visita:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="visitas"
+            placeholder="Escribe la descripción o el cliente asociado a la visita" />
+        </form>
+      </div>
       <div class="panel__body">
-
         <div class="table-wrap">
           <table class="data-table" data-entity="visitas">
             <thead>

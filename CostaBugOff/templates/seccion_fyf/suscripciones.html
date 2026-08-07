@@ -15,13 +15,23 @@
 
   {% include 'plantillas/_navbar.html' %}
   <main class="app">
-    <section class="panel active" id="panel-suscripciones" data-title="Suscripciones">
+    <section class="panel active" id="panel-suscripciones" data-title="suscripciones">
       <div class="panel__header">
         <h1>Suscripciones</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Suscripción:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="suscripciones"
+            placeholder="Escribe el nombre o el numero de telefono del cliente." />
+        </form>
+      </div>
+      <!-- TABLA DE SUSCRIPCIONES -->
+      <!-- TABLA DE SUSCRIPCIONES -->
       <div class="panel__body">
         <div class="table-wrap">
-          <table class="data-table" data-entity="Suscripcion">
+          <table class="data-table" data-entity="suscripciones">
             <thead>
               <tr>
                 <th>Suscripciones</th>
@@ -70,8 +80,6 @@
             <label for="subs-id-pago">ID de pago</label>
             <input type="number" id="subs-id-pago" name="id_pago" placeholder="ID de Pago" required />
           </div>
-          required
-          />
       </div>
       <div class="field">
         <label for="subs-estado">Estado</label>

@@ -16,13 +16,20 @@
   {% include 'plantillas/_navbar.html' %}
 
   <main class="app">
-    <section class="panel active" id="panel-transacciones" data-title="Transacciones">
+    <section class="panel active" id="panel-transacciones" data-title="transacciones">
       <div class="panel__header">
         <h1>Transacciones</h1>
       </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Transacción:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="transacciones" placeholder="PENDIENTE." />
+        </form>
+      </div>
       <div class="panel__body">
         <div class="table-wrap">
-          <table class="data-table" data-entity="Transaccion">
+          <table class="data-table" data-entity="transacciones">
             <thead>
               <tr>
                 <th>ID Pago</th>
@@ -46,7 +53,7 @@
           </table>
         </div>
 
-        <form class="entity-form" id="formTransacciones" data-entity="Transaccion">
+        <form class="entity-form" id="formTransacciones" data-entity="transacciones">
           <div class="field">
             <label for="trans-id">ID Transaccion</label>
             <input type="number" id="trans-id" name="id_transaccion" placeholder="1" required />

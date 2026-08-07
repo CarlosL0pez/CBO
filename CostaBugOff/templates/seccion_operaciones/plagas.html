@@ -18,9 +18,18 @@
     <section class="panel active" id="panel-plagas" data-title="Plaga">
       <div class="panel__header">
         <h1>Plagas</h1>
+
         <button class="btn btn--ghost btn-update-lookup">
           Actualizar por ID
         </button>
+      </div>
+      {# Filtro de búsqueda #}
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <form class="filtro-form" onsubmit="return false;">
+          <label for="filtro-busqueda">Buscar Plaga:</label>
+          <input type="text" id="filtro-busqueda" data-filter-target="plagas"
+            placeholder="Escribe el nombre o la descripcion de la plaga." />
+        </form>
       </div>
       <div class="panel__body">
         <div class="table-wrap">
