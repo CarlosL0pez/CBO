@@ -1041,12 +1041,78 @@ def api_eliminar_factura(id_factura):
 ###########################################################################################
 ################################# SECCION - FACTURA ADMIN ################################
 ###########################################################################################
+# @app.route("/planes")
+# def planes():
+#     lista_productos = obtener_productos()
+#     lista_suscripciones = obtener_suscripciones()
+#     return render_template(
+#         "seccion_facturaA/planes.html",
+#         productos=lista_productos,
+#         suscripciones=lista_suscripciones,
+#     )
+
+
+# # ---------------- Carrito de compras ----------------
+# @app.route("/carrito/agregar", methods=["POST"])
+# def carrito_agregar():
+#     datos = request.get_json()
+#     tipo = datos["tipo"]  # "producto" o "suscripcion"
+#     item_id = int(datos["id"])
+#     nombre = datos["nombre"]
+#     precio = float(datos["precio"])
+#     cantidad = int(datos.get("cantidad", 1))
+
+#     carrito = session.get("carrito", [])
+
+#     for item in carrito:
+#         if item["tipo"] == tipo and item["id"] == item_id:
+#             item["cantidad"] += cantidad
+#             break
+#     else:
+#         carrito.append({
+#             "tipo": tipo, "id": item_id, "nombre": nombre,
+#             "precio_unitario": precio, "cantidad": cantidad,
+#         })
+
+#     session["carrito"] = carrito
+#     return jsonify({"message": "Agregado al carrito", "total_items": len(carrito)}), 200
+
+
+# @app.route("/carrito/quitar", methods=["POST"])
+# def carrito_quitar():
+#     datos = request.get_json()
+#     tipo = datos["tipo"]
+#     item_id = int(datos["id"])
+
+#     carrito = session.get("carrito", [])
+#     carrito = [i for i in carrito if not (i["tipo"] == tipo and i["id"] == item_id)]
+#     session["carrito"] = carrito
+#     return jsonify({"message": "Quitado del carrito"}), 200
+
+# @app.route("/carrito")
+# def carrito():
+#     carrito_actual = session.get("carrito", [])
+#     total = sum(i["cantidad"] * i["precio_unitario"] for i in carrito_actual)
+#     metodos_pago = obtener_metodos_pago()
+#     return render_template(
+#         "seccion_facturaA/carrito.html",
+#         carrito=carrito_actual,
+#         total=total,
+#         metodos_pago=metodos_pago,
+#     )
+
+# @app.route("/mis-facturas")
+# def mis_facturas():
+#     facturas = obtener_facturas_cliente(session["id_cliente"])
+#     return render_template("seccion_facturaA/mis_facturas.html", facturas=facturas)
+
+
 @app.route("/planes")
 def planes():
     lista_productos = obtener_productos()
     lista_suscripciones = obtener_suscripciones()
     return render_template(
-        "seccion_facturaA/planes.html",
+        "planes.html",
         productos=lista_productos,
         suscripciones=lista_suscripciones,
     )
@@ -1095,7 +1161,7 @@ def carrito():
     total = sum(i["cantidad"] * i["precio_unitario"] for i in carrito_actual)
     metodos_pago = obtener_metodos_pago()
     return render_template(
-        "seccion_facturaA/carrito.html",
+        "carrito.html",
         carrito=carrito_actual,
         total=total,
         metodos_pago=metodos_pago,
@@ -1104,7 +1170,7 @@ def carrito():
 @app.route("/mis-facturas")
 def mis_facturas():
     facturas = obtener_facturas_cliente(session["id_cliente"])
-    return render_template("seccion_facturaA/mis_facturas.html", facturas=facturas)
+    return render_template("mis_facturas.html", facturas=facturas)
 
 ###########################################################################################
 ################################## SECCION - OTROS ##################################
