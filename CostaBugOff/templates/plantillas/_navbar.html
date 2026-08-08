@@ -71,6 +71,7 @@
                 <a href="{{ url_for('transacciones') }}" data-section="transacciones">Transacciones</a>
                 <a href="{{ url_for('detalle_transacciones') }}" data-section="detalle_transacciones">Detalle de
                     Transacciones</a>
+                <a href="{{ url_for('suscripciones_activas') }}" data-section="suscripciones_activas">Suscripciones Activas</a>
                 {% endif %}
                 <a href="/facturas" data-section="facturas">Facturas</a>
                 {% if session.get('rol') != 'Empleado' %}

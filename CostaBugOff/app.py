@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 from flask_cors import CORS
 from oracledb import IntegrityError
 from flask import Response
+from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 app.secret_key = "cambia-esto-por-algo-secreto-antes-de-entregar"
@@ -59,6 +60,7 @@ from models.seccion_fyf.facturas import (
     obtener_detalle_factura, obtener_facturas_cliente, obtener_todas_facturas
 )
 from models.seccion_fyf.reporte_ventas import obtener_reporte_ventas
+from models.seccion_fyf.suscripciones_activas import obtener_suscripciones_activas
 
 
 from models.usuario import autenticar_usuario
@@ -1014,6 +1016,21 @@ def reporte_ventas():
         for f in filas
     ]
     return render_template("seccion_fyf/reporte_ventas.html", ventas=ventas)
+
+
+DIAS_AVISO_RENOVACION = 7
+
+
+@app.route("/suscripciones-activas")
+def suscripciones_activas():
+    suscripciones = obtener_suscripciones_activas()
+    ahora = datetime.now()
+    for s in suscripciones:
+        fecha = s.get("FECHA_PROXIMA_RENOVACION")
+        dias_restantes = (fecha - ahora).days if fecha else None
+        s["dias_restantes"] = dias_restantes
+        s["por_vencer"] = dias_restantes is not None and 0 <= dias_restantes <= DIAS_AVISO_RENOVACION
+    return render_template("seccion_fyf/suscripciones_activas.html", suscripciones=suscripciones)
 
 
 ###########################################################################################
