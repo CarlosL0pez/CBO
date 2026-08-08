@@ -984,8 +984,9 @@ def facturas_admin():
         facturas = obtener_facturas_cliente(id_cliente)
     else:
         facturas = obtener_todas_facturas()
+    plantilla = "seccion_fyf/facturas_billing.html" if session.get("rol") == "Billing" else "seccion_fyf/facturas_admin.html"
     return render_template(
-        "seccion_fyf/facturas_admin.html",
+        plantilla,
         facturas=facturas,
         clientes=clientes,
         id_cliente_seleccionado=id_cliente,
